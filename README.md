@@ -34,6 +34,7 @@ pip <https://pip.pypa.io/en/stable/installing/>
 - scrapy crawl morris -o morris_items.csv
 - scrapy crawl essex -o essex_items.csv
 - scrapy crawl bergen -o bergen_items.csv
+
 ### Part 2:
 1. Open google_sps.py
 2. Command + B
