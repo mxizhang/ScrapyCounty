@@ -18,6 +18,8 @@ from selenium import webdriver
 from morris.items import BergenItem
 import time
 
+DATE = []
+
 class BergenSpider(Spider):
     name = "bergen"
     allowed_domains = ["civilview.com"]
@@ -32,10 +34,14 @@ class BergenSpider(Spider):
         el.click()
         time.sleep(1)
         
-        results = self.driver.find_elements_by_xpath('//a[text()="Details"]')
+        #results = self.driver.find_elements_by_xpath('//a[text()="Details"]')
         #print len(results)
-        for i in range(2, len(results) + 1):
+        i = 2
+        while len(DATE) < 3:
             result = self.driver.find_element_by_xpath("//table/tbody/tr[%s]/td[1]/a" % i)
+            date = self.driver.find_element_by_xpath("//table/tbody/tr[%s]/td[3]" % i).text
+            if date not in DATE:
+                DATE.append(date)
             result.click()
 
             item = BergenItem()
@@ -50,7 +56,8 @@ class BergenSpider(Spider):
             item['schd_data'] = self.driver.find_element_by_xpath('//table[@id="grdStatusHistory"]/tbody/tr[2]/td[2]').text
             yield item
             self.driver.back()
+            i = i + 1
             #time.sleep(0.5)
             ###Uncomment above if loading error happens
-        
+        print DATE
         self.driver.close()

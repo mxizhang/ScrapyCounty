@@ -19,7 +19,7 @@ from selenium import webdriver
 from morris.items import MorrisItem
 import time
 
-DATE = "7/28/2016"
+DATE = []
 
 class MorrisSpider(Spider):
     name = "morris"
@@ -38,15 +38,15 @@ class MorrisSpider(Spider):
         el.click()
         time.sleep(1)
         
-        results = self.driver.find_elements_by_xpath('//a[text()="Details"]')
+        #results = self.driver.find_elements_by_xpath('//a[text()="Details"]')
         #print len(results)
         ###Uncomment above to print NO. for all properties in morris
-        
-        for i in range(2, len(results) + 1):
+        i = 2
+        while len(DATE) < 3:
             result = self.driver.find_element_by_xpath("//table/tbody/tr[%s]/td[1]/a" % i)
             date = self.driver.find_element_by_xpath("//table/tbody/tr[%s]/td[3]" % i).text
-            if date == DATE:
-            	break;
+            if date not in DATE:
+            	DATE.append(date)
             result.click()
 
             item = MorrisItem()
@@ -62,6 +62,7 @@ class MorrisSpider(Spider):
 
             item['schd_data'] = self.driver.find_element_by_xpath('//table[@id="grdStatusHistory"]/tbody/tr[2]/td[2]').text
             yield item
+            i = i + 1
             self.driver.back()
         
         self.driver.close()
