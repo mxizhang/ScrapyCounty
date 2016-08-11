@@ -15,7 +15,7 @@ pip <https://pip.pypa.io/en/stable/installing/>
 	Install:  $ pip install scrapy
 - Selenium <https://pypi.python.org/pypi/selenium>
 	Install: $ pip install selenium
-- PhantomJS
+- PhantomJS <http://phantomjs.org/>
 	Install: $ sudo pkg install phantomjs
 
 ### Part 2:
