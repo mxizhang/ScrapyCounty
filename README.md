@@ -17,6 +17,7 @@ pip <https://pip.pypa.io/en/stable/installing/>
 	Install: $ pip install selenium
 - PhantomJS
 	Install: $ sudo pkg install phantomjs
+
 ### Part 2:
 - gspread [Google Spreadsheets Python API <https://github.com/burnash/gspread>]
 	Install: $ pip install gspread
