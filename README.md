@@ -1,5 +1,5 @@
 # ScrapyCounty
-Implemented by Python
+Implemented with Python 2.7 by Xi Zheng for Noah Luk at LNH Holding LLC
 
 ## Overview:
     Collecting sales data from <http://salesweb.civilview.com/>
@@ -7,6 +7,7 @@ Implemented by Python
     - Morris
     - Essex
     - Bergen
+    - Middlesex coming soon.
 
 ## Installation:
 pip <https://pip.pypa.io/en/stable/installing/>
