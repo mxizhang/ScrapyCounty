@@ -1,5 +1,5 @@
 # ScrapyCounty
-Implemented with Python 2.7 by Xi Zheng for Noah Luk at LNH Holding LLC
+Implemented with Python 2.7 by Xi Zhang for Noah Luk at LNH Holding LLC
 
 ## Overview:
     Collecting sales data from <http://salesweb.civilview.com/>
