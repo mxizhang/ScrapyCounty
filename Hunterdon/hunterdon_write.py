@@ -10,7 +10,7 @@ Before Start:
 '''
 import gspread
 import csv
-import test
+import zillow_functions
 import time
 import httplib2
 from apiclient import discovery
@@ -108,7 +108,7 @@ for line in data[1:]:
 		except ValueError as err:
 			continue
 
-		zillow = test.findzillow(address, town)
+		zillow = zillow_functions.findzillow(address, town)
 		print zillow
 		worksheet.update_cell(start, 7, "\n".join(zillow[3][:]) + "\n" + town)
 		worksheet.update_cell(start, 11, "\n".join(zillow[2][:])) #zillowID
