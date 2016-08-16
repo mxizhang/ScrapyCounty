@@ -7,6 +7,7 @@ Implemented with Python 2.7 by Xi Zhang for Noah Luk at LNH Holding LLC
     - Morris
     - Essex
     - Bergen
+    - Hunterdon
     - Middlesex coming soon.
 
 ## Installation:
@@ -29,6 +30,16 @@ pip <https://pip.pypa.io/en/stable/installing/>
 - Obtain zillow's API 
   <http://www.zillow.com/howto/api/APIOverview.htm>
 
+### Part 3 (Hunterdon):
+- DataBaker <https://scraperwiki.github.io/eot-docs/>
+	Install: pip install databaker
+- gspread [Google Spreadsheets Python API <https://github.com/burnash/gspread>]
+	Install: $ pip install gspread
+- Obtain OAuth2 credentials from Google Developers Console
+	[http://gspread.readthedocs.io/en/latest/oauth2.html]
+- Zillow official API:
+	<http://www.zillow.com/howto/api/APIOverview.htm>
+
 ## Run:
 ### Part 1:
 1. Open Shell
@@ -40,3 +51,10 @@ pip <https://pip.pypa.io/en/stable/installing/>
 ### Part 2:
 1. Open google_sps.py
 2. Command + B
+
+### Part 3 (Hunterdon):
+1. Open Shell
+2. cd Hunterdon/
+- bake bakerrec.py example_HD_1.pdf
+3. Open hunterdon_write.py
+4. Command + B
