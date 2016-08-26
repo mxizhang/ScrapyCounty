@@ -6,11 +6,16 @@ from pyzillow.pyzillow import ZillowWrapper, GetDeepSearchResults
 def findzillow(address, township):
 	zillow_data = ZillowWrapper("X1-ZWz1fe5w83qcjv_70ucn")
 	#address = "45 RIDGE ROAD"
-	address = "+".join(address.split())
+	#address = "+".join(address.split())
 	#city = "TOWNSHIP OF EAST AMWELL"
-	township = "+".join(township.split())
-	url = 'http://www.zillow.com/webservice/GetSearchResults.htm?zws-id=X1-ZWz1fe5w83qcjv_70ucn&address=' + address + '&citystatezip='+ township + '+NJ'
-	#print (url)
+	if township == "":
+		address = "+".join(address.split()[:-1])
+		url = 'http://www.zillow.com/webservice/GetSearchResults.htm?zws-id=X1-ZWz1fe5w83qcjv_70ucn&address=' + address + '&citystatezip=NJ'
+	else:
+		address = "+".join(address.split())
+		township = "+".join(township.split())
+		url = 'http://www.zillow.com/webservice/GetSearchResults.htm?zws-id=X1-ZWz1fe5w83qcjv_70ucn&address=' + address + '&citystatezip='+ township + '+NJ'
+	print url
 	page = requests.get(url)
 	tree = html.fromstring(page.content)
 
@@ -32,3 +37,10 @@ def findzillow(address, township):
 		#print ("No Zillow Found!")
 		zestimate = 0
 	'''
+'''
+address = "24 LANDSDOWN ROAD FRANKLIN NJ"
+
+t = ""
+z = findzillow(address, t)
+print z
+'''
