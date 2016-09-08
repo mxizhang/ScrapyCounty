@@ -43,16 +43,19 @@ Check pip:
 
 	* Attention: 1000 max search properties.
 
-
 - Obtain PDF to Excel API:
 	<https://pdftables.com/pdf-to-excel-api>
 	* Replace line 22 in hunterdon_save.py
-
 	* Attention: 50 max free convert. Pay for more.
 
+- httplib2
+ 	>Install: pip install httplib2
 
 - DataBaker <https://scraperwiki.github.io/eot-docs/>
 	>Install: pip install databaker
+## Before run:
+	* Make sure change spreadsheets address
+	* Make sure share spreadsheets with client in credentials
 
 ## Run:
 	python scrapycounty.py
