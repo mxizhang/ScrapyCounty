@@ -35,6 +35,15 @@ Check pip:
 	Install: $ pip install pyzillow
 - Obtain zillow's official API 
   	<http://www.zillow.com/howto/api/APIOverview.htm>
+
+	Attention: 1000 max search properties.
+	
+- Obtain PDF to Excel API:
+	Replace line 22 in hunterdon_save.py
+	<https://pdftables.com/pdf-to-excel-api>
+
+	Attention: 50 max free convert. Pay for more.
+	
 - DataBaker <https://scraperwiki.github.io/eot-docs/>
 	Install: pip install databaker
 
