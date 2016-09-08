@@ -22,8 +22,9 @@ Check pip:
 	Install: $ pip install selenium
 - PhantomJS <http://phantomjs.org/>
 	Install: $ sudo pkg install phantomjs
-    [Tip for Windows:
-        Change path for PhantomJS first]
+
+    	Tip for Windows:
+        	Change path for PhantomJS first
 
 ### Part 2:
 - gspread [Google Spreadsheets Python API <https://github.com/burnash/gspread>]
