@@ -17,22 +17,22 @@ Check pip:
 
 ### Part 1: (For scrapy crawler)
 - Scrapy <http://scrapy.org/>
-	Install:  $ pip install scrapy
+	>Install:  $ pip install scrapy
 - Selenium <https://pypi.python.org/pypi/selenium>
-	Install: $ pip install selenium
+	>Install: $ pip install selenium
 - PhantomJS <http://phantomjs.org/>
-	Install: $ sudo pkg install phantomjs
+	>Install: $ sudo pkg install phantomjs
 
     	Tip for Windows:
         	Change path for PhantomJS first
 
 ### Part 2:
 - gspread [Google Spreadsheets Python API <https://github.com/burnash/gspread>]
-	Install: $ pip install gspread
+	>Install: $ pip install gspread
 - Obtain OAuth2 credentials from Google Developers Console
 	[http://gspread.readthedocs.io/en/latest/oauth2.html]
 - pyzillow <https://pypi.python.org/pypi/pyzillow/0.5.5>
-	Install: $ pip install pyzillow
+	>Install: $ pip install pyzillow
 - Obtain zillow's official API :
   	<http://www.zillow.com/howto/api/APIOverview.htm>
 	>Attention: 1000 max search properties.
@@ -43,7 +43,7 @@ Check pip:
 	>Attention: 50 max free convert. Pay for more.
 
 - DataBaker <https://scraperwiki.github.io/eot-docs/>
-	Install: pip install databaker
+	>Install: pip install databaker
 
 ## Run:
 	python scrapycounty.py
