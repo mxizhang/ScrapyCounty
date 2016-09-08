@@ -11,14 +11,19 @@ Implemented with Python 2.7 by Xi Zhang for Noah Luk at LNH Holding LLC
     - Middlesex coming soon.
 
 ## Installation:
-pip <https://pip.pypa.io/en/stable/installing/>
-### Part 1:
+Check pip:
+ - pip is already installed if you're using Python 2 >=2.7.9 or Python 3 >=3.4 downloaded from python.org, but you'll need to upgrade ir.<pip install -U pip>
+ - Download pip <https://pip.pypa.io/en/stable/installing/>
+
+### Part 1: (For scrapy crawler)
 - Scrapy <http://scrapy.org/>
 	Install:  $ pip install scrapy
 - Selenium <https://pypi.python.org/pypi/selenium>
 	Install: $ pip install selenium
 - PhantomJS <http://phantomjs.org/>
 	Install: $ sudo pkg install phantomjs
+    [Tip for Windows:
+        Change path for PhantomJS first]
 
 ### Part 2:
 - gspread [Google Spreadsheets Python API <https://github.com/burnash/gspread>]
@@ -27,34 +32,11 @@ pip <https://pip.pypa.io/en/stable/installing/>
 	[http://gspread.readthedocs.io/en/latest/oauth2.html]
 - pyzillow <https://pypi.python.org/pypi/pyzillow/0.5.5>
 	Install: $ pip install pyzillow
-- Obtain zillow's API 
-  <http://www.zillow.com/howto/api/APIOverview.htm>
-
-### Part 3 (Hunterdon):
+- Obtain zillow's official API 
+  	<http://www.zillow.com/howto/api/APIOverview.htm>
 - DataBaker <https://scraperwiki.github.io/eot-docs/>
 	Install: pip install databaker
-- gspread [Google Spreadsheets Python API <https://github.com/burnash/gspread>]
-	Install: $ pip install gspread
-- Obtain OAuth2 credentials from Google Developers Console
-	[http://gspread.readthedocs.io/en/latest/oauth2.html]
-- Zillow official API:
-	<http://www.zillow.com/howto/api/APIOverview.htm>
+
 
 ## Run:
-### Part 1:
-1. Open Shell
-2. cd ScrapyCounty/
-- scrapy crawl morris -o morris_items.csv
-- scrapy crawl essex -o essex_items.csv
-- scrapy crawl bergen -o bergen_items.csv
-
-### Part 2:
-1. Open google_sps.py
-2. Command + B
-
-### Part 3 (Hunterdon):
-1. Open Shell
-2. cd Hunterdon/
-- bake bakerrec.py example_HD_1.pdf
-3. Open hunterdon_write.py
-4. Command + B
+	python scrapycounty.py
