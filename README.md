@@ -34,6 +34,9 @@ Check pip:
 
 - Obtain OAuth2 credentials from Google Developers Console
 	[http://gspread.readthedocs.io/en/latest/oauth2.html]
+	>pip install PyOpenSSL
+	>pip install --upgrade oauth2client
+	>pip install --upgrade google-api-python-client
 
 - pyzillow <https://pypi.python.org/pypi/pyzillow/0.5.5>
 	>Install: $ pip install pyzillow
