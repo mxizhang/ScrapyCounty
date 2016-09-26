@@ -94,9 +94,9 @@ def essex_write(SS_ADDRESS, key):
 				worksheet.update_cell(start, 3, line[4]) #case
 				worksheet.update_cell(start, 4, "PLF: " + line[5] + "\n" + "DEF: " + line[8])
 				worksheet.update_cell(start, 5, line[6] + "\n" + "Phone: " + line[3] ) #att
-				worksheet.update_cell(start, 6, address) #add
+				worksheet.update_cell(start, 6, line[7]) #add
 				worksheet.update_cell(start, 9, line[2]) #upset
-				address = line[6]
+				address = line[7]
 
 			except ValueError as err:
 				print "ValueError"

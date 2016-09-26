@@ -95,7 +95,7 @@ def hunterdon_write(SS_ADDRESS, key, old_id, sheetname):
 	print "Creating new sheet ..."
 	requests = []
 	new_no = random.randrange(1, 99999999)
-	title = time.strftime("%d/%m/%Y")
+	title = time.strftime("%m/%d/%Y")
 	requests.append({
 	    'addSheet': {
 		    "properties": { "sheetId": new_no, "title": title,

@@ -1,11 +1,12 @@
 import csv
 import os
+import zillow_functions
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
 def njlis():
-	driver = webdriver.PhantomJS(executable_path="C:/phantomjs-2.1.1-windows/bin/phantomjs.exe")
+	driver = webdriver.PhantomJS(executable_path="C:/Users/flipp/phantomjs-2.1.1-windows/bin/phantomjs.exe")
 	driver.get("https://njlispendens.com/properties")
 
 	print "#################Logging In################"
@@ -37,7 +38,11 @@ def essex_lis(foldername):
 		caseno = line[4]
 		address = line[7]
 		zip = address.split(' ')[-1:][0]
-		street = address.split(' ')[0] + " " + address.split(' ')[1]
+		if address is not "":
+			try:
+				street = address.split(' ')[0] + " " + address.split(' ')[1]
+			except IndexError:
+				street = address.split(' ')[0]
 
 		street_input = driver.find_element_by_name("Address")
 		zip_input = driver.find_element_by_name("Zip_Code")
@@ -75,7 +80,11 @@ def morris_lis(foldername):
 		caseno = line[3]
 		address = line[6]
 		zip = address.split(' ')[-1:][0]
-		street = address.split(' ')[0] + " " + address.split(' ')[1]
+		if address is not "":
+			try:
+				street = address.split(' ')[0] + " " + address.split(' ')[1]
+			except IndexError:
+				street = address.split(' ')[0]
 
 		street_input = driver.find_element_by_name("Address")
 		zip_input = driver.find_element_by_name("Zip_Code")
@@ -113,7 +122,11 @@ def bergen_lis(foldername):
 		caseno = line[3]
 		address = line[6]
 		zip = address.split(' ')[-1:][0]
-		street = address.split(' ')[0] + " " + address.split(' ')[1]
+		if address is not "":
+			try:
+				street = address.split(' ')[0] + " " + address.split(' ')[1]
+			except IndexError:
+				street = address.split(' ')[0]
 
 		street_input = driver.find_element_by_name("Address")
 		zip_input = driver.find_element_by_name("Zip_Code")
@@ -134,7 +147,7 @@ def bergen_lis(foldername):
 		driver.back()
 	driver.quit()
 
-def middlesex_lis(foldername):
+def hunterdon_lis(foldername):
 	try:
 	    os.makedirs('./' + foldername)
 	except OSError:
@@ -143,31 +156,42 @@ def middlesex_lis(foldername):
 	driver = njlis()
 	
 	print "#################Reading Data################"
-	with open("middlesex_items.csv","rb") as csvfile:
+	with open("data-sale-bakerrec-.csv","rb") as csvfile:
 		filereader = csv.reader(csvfile)
 		data = list(filereader)
 
-	for index, line in enumerate(data[1:], start=0):
-		caseno = line[3]
-		address = line[7]
-		zip = line[4]
-		street = address.split(' ')[0] + " " + address.split(' ')[1]
+	for index, line in enumerate(data[1:], start=0): 
+		#print line
+		if line[0] is not "":
+			caseno = str(int(round(float(line[0]))))
+			address = line[55]
+			city = line[62]
+			town = " ".join(city.split()[2:])
+			zillow = zillow_functions.findzillow(address, town)
+			zip = zillow[3]
+			#print zip + "zip + " + address
+			if address is not "":
+				try:
+					street = address.split(' ')[0] + " " + address.split(' ')[1]
+				except IndexError:
+					street = address.split(' ')[0]
 
-		street_input = driver.find_element_by_name("Address")
-		zip_input = driver.find_element_by_name("Zip_Code")
+			street_input = driver.find_element_by_name("Address")
+			zip_input = driver.find_element_by_name("Zip_Code")
 
-		street_input.clear()
-		zip_input.clear()
+			street_input.clear()
+			zip_input.clear()
 
-		street_input.send_keys(street)
-		if zip.isdigit():
-			print "NO: " + str(zip) + " + " + str(street)
-			zip_input.send_keys(zip)
-		else:
-			print str(zip) + " + " + str(street)
+			street_input.send_keys(street)
+			if zip.isdigit():
+				print "NO: " + str(zip) + " + " + str(street)
+				zip_input.send_keys(zip)
+			else:
+				print str(zip) + " + " + str(street)
 
-		driver.find_element_by_name("submit").click()
+			driver.find_element_by_name("submit").click()
 
-		driver.get_screenshot_as_file(foldername + '/' + caseno + '.png');
-		driver.back()
+			driver.get_screenshot_as_file(foldername + '/' + caseno + '.png');
+			driver.back()
 	driver.quit()
+

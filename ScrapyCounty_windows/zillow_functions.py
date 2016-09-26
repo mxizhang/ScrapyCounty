@@ -26,7 +26,7 @@ def findzillow(address, township):
 		prices = tree.xpath('//amount/text()')
 		link = tree.xpath('//homedetails/text()')
 		zipcode = tree.xpath('//zipcode/text()')
-		zillow = [zpid, prices[0], link, zipcode]
+		zillow = [zpid[0], prices[0], link[0], zipcode[0]]
 		return zillow
 
 	except IndexError as err:
