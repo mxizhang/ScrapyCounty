@@ -16,7 +16,7 @@ def bergen_write(SS_ADDRESS, key):
 	'''
 	*** ***
 	'''
-	worksheet = sh.get_worksheet(2)
+	worksheet = sh.get_worksheet(0)
 
 	scope_gl = 'https://www.googleapis.com/auth/spreadsheets'
 	credentials_gl = ServiceAccountCredentials.from_json_keyfile_name(key, scope_gl)
@@ -33,10 +33,14 @@ def bergen_write(SS_ADDRESS, key):
 		data = list(filereader)
 		row_count = len(data)
 
+	print "------------------------------------------"
+	print "Bergen County has " + str(row_count) + " items!"
+	print "------------------------------------------"
+
 	requests = []
 	requests.append({
 	    'insertDimension': {
-	        "range": {"sheetId": sheetID, "dimension": 1, "startIndex": 5, "endIndex": 1 + row_count},
+	        "range": {"sheetId": sheetID, "dimension": 1, "startIndex": 5, "endIndex": 5 + row_count},
 	        "inheritFromBefore": False,
 	    }
 	})
@@ -73,6 +77,11 @@ def bergen_write(SS_ADDRESS, key):
 						"pasteType": "PASTE_NORMAL",
 				    }
 				})
+				requests.append({
+				    'deleteDimension': {
+				        "range": {"sheetId": sheetID, "dimension": 1, "startIndex": cell.row - 1, "endIndex": cell.row},
+				    }
+				})
 
 				batchUpdateRequest = {'requests': requests}
 				service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
@@ -96,5 +105,5 @@ def bergen_write(SS_ADDRESS, key):
 			zip = address.split(' ')[-1:]
 			zillow = zillow_functions.find_zillow_by_zip(address, zip)
 			print zillow
-			worksheet.update_cell(start, 14, zillow[0])#zestimate
+			worksheet.update_cell(start, 14, zillow[1])#zestimate
 			start = start + 1

@@ -3,12 +3,15 @@
 '''
 Python 2.7
 Before Start:
-1. Scrapy [http://scrapy.org/]
+11. Scrapy [http://scrapy.org/]
     Install:  $ pip install scrapy
 2. Selenium [https://pypi.python.org/pypi/selenium]
     Install: $ pip install selenium
 3. PhantomJS
     Install: $ sudo pkg install phantomjs
+    [Tip for Windows:
+        Change the following code as:
+        self.driver = webdriver.PhantomJS(executable_path=your_phantomJS_path)]
 Run : 
 scrapy crawl morris -o morris_items.csv
 '''
@@ -25,7 +28,7 @@ class EssexSpider(Spider):
     start_urls = ["http://salesweb.civilview.com"]
 
     def __init__(self):
-    	self.driver = webdriver.PhantomJS()
+    	self.driver = webdriver.PhantomJS(executable_path="C:/Users/flipp/phantomjs-2.1.1-windows/bin/phantomjs.exe")
 
     def parse(self, response):
         self.driver.get(response.url)

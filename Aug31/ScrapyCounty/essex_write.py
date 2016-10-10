@@ -24,19 +24,23 @@ def essex_write(SS_ADDRESS, key):
 	sheetID = SS_ADDRESS.split('/')[6].split('=')[-1:][0]
 	print spreadsheetID + " & " + sheetID
 	'''
-	!!! 
+	!!! Change worksheet number to '0' before used
 	'''
-	worksheet = sh.get_worksheet(1)
+	worksheet = sh.get_worksheet(0)
 
 	with open("essex_items.csv","rb") as csvfile:
 		filereader = csv.reader(csvfile)
 		data = list(filereader)
 		row_count = len(data)
 
+	print "------------------------------------------"
+	print "Essex County has " + str(row_count) + " items!"
+	print "------------------------------------------"
+
 	requests = []
 	requests.append({
 	    'insertDimension': {
-	        "range": {"sheetId": sheetID, "dimension": 1, "startIndex": 5, "endIndex": 1 + row_count},
+	        "range": {"sheetId": sheetID, "dimension": 1, "startIndex": 5, "endIndex": 5 + row_count},
 	        "inheritFromBefore": False,
 	    }
 	})
@@ -73,6 +77,11 @@ def essex_write(SS_ADDRESS, key):
 						"pasteType": "PASTE_NORMAL",
 				    }
 				})
+				requests.append({
+				    'deleteDimension': {
+				        "range": {"sheetId": sheetID, "dimension": 1, "startIndex": cell.row - 1, "endIndex": cell.row},
+				    }
+				})
 
 				batchUpdateRequest = {'requests': requests}
 				service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
@@ -85,9 +94,9 @@ def essex_write(SS_ADDRESS, key):
 				worksheet.update_cell(start, 3, line[4]) #case
 				worksheet.update_cell(start, 4, "PLF: " + line[5] + "\n" + "DEF: " + line[8])
 				worksheet.update_cell(start, 5, line[6] + "\n" + "Phone: " + line[3] ) #att
-				worksheet.update_cell(start, 6, address) #add
+				worksheet.update_cell(start, 6, line[7]) #add
 				worksheet.update_cell(start, 9, line[2]) #upset
-				address = line[6]
+				address = line[7]
 
 			except ValueError as err:
 				print "ValueError"
@@ -96,5 +105,5 @@ def essex_write(SS_ADDRESS, key):
 			zip = address.split(' ')[-1:]
 			zillow = zillow_functions.find_zillow_by_zip(address, zip)
 			print zillow
-			worksheet.update_cell(start, 14, zillow[0])#zestimate
+			worksheet.update_cell(start, 14, zillow[1])#zestimate
 			start = start + 1

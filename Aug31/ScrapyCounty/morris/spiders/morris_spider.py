@@ -10,8 +10,11 @@ https://pip.pypa.io/en/stable/installing/
 	Install: $ pip install selenium
 3. PhantomJS
 	Install: $ sudo pkg install phantomjs
+    [Tip for Windows:
+        Change the following code as:
+        self.driver = webdriver.PhantomJS(executable_path=your_phantomJS_path)]
 
-Run : 
+Run example: 
 scrapy crawl morris -o morris_items.csv
 '''
 from scrapy import Spider
@@ -28,8 +31,11 @@ class MorrisSpider(Spider):
     #headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36"}
 
     def __init__(self):
-    	#driver open
-        self.driver = webdriver.PhantomJS()
+        '''
+            !!! FOR WINDOWS USERS
+        '''
+        #self.driver = webdriver.PhantomJS(executable_path="c:/phantomjs-2.1.1-windows/bin/phantomjs.exe")
+        self.driver = webdriver.PhantomJS(executable_path="C:/Users/flipp/phantomjs-2.1.1-windows/bin/phantomjs.exe")
 
     def parse(self, response):
         self.driver.get(response.url)

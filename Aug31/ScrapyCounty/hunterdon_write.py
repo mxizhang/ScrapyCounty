@@ -13,6 +13,7 @@ Before Start:
 	[https://developers.google.com/api-client-library/python/start/installation]
 5. Share with @client
 '''
+import time
 import gspread
 import csv
 import zillow_functions
@@ -39,15 +40,14 @@ def hunterdon_write(SS_ADDRESS, key, old_id, sheetname):
 	service = discovery.build('sheets', 'v4', http=http, discoveryServiceUrl=discoveryUrl)
 
 	spreadsheetID = SS_ADDRESS.split('/')[5]
+	print spreadsheetID
 	#sheetID = SS_ADDRESS.split('/')[6].split('=')[-1:][0]
-
 	'''
 	### back up ###
 	'''
 	print "Backing Up ..."
 	startrow = 6
 	caseno = worksheet_old.cell(startrow, 3).value
-	print caseno
 	while caseno is not "":
 		requests = []
 		requests.append({
@@ -56,6 +56,20 @@ def hunterdon_write(SS_ADDRESS, key, old_id, sheetname):
 		        "inheritFromBefore": False,
 		    }
 		})
+
+		try:
+			cell = worksheet_all.find(caseno)
+			print caseno + "at: " + cell.value + "is deleted."
+			requests.append({
+			    'deleteDimension': {
+				    "range": {
+					    "sheetId": 0, "dimension": 'ROWS', "startIndex": cell.row,"endIndex": cell.row + 1,
+				    },
+			    }
+			})
+		except gspread.CellNotFound as err:
+			print "Not Found in Sheet_All!"
+
 
 		requests.append({
 		    'copyPaste': {
@@ -68,59 +82,42 @@ def hunterdon_write(SS_ADDRESS, key, old_id, sheetname):
 				"pasteType": "PASTE_NORMAL",
 		    }
 		})
-		'''
-		try:
-			cell = worksheet_all.find(caseno)
-			print caseno + "at: " + cell.value + "is deleted."
-			requests.append({
-			    'deleteDimension': {
-				    "range": {
-					    "sheetId": 0,
-					    "dimension": 'ROWS',
-						"startIndex": cell.row,
-						"endIndex": cell.row + 1,
-				    },
-			    }
-			})
-		except gspread.CellNotFound as err:
-			print "Not Found in Sheet_All!"
-		'''
 		batchUpdateRequest = {'requests': requests}
 		service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
 		startrow = startrow + 1
 		caseno = worksheet_old.cell(startrow, 3).value
-		print caseno
+		#print str(startrow) + " not null: " + str(caseno)
 
 	'''
 	### New Sheet ###
 	'''
-	print "Creating new Sheet ..."
+
+	print "Creating new sheet ..."
 	requests = []
-	new_no = random.randrange(1, 155)
+	new_no = random.randrange(1, 99999999)
+	title = time.strftime("%m/%d/%Y")
 	requests.append({
 	    'addSheet': {
-		    "properties": {
-			    "sheetId": new_no,
-			    "title": 'new',
-		    },
+		    "properties": { "sheetId": new_no, "title": title,
+		},
 	    }
 	})
 	requests.append({
-    'copyPaste': {
-	    "source": {
-		    "sheetId": 0, "startRowIndex": 0, "endRowIndex": 4,
-	    },
-	    "destination": {
-	    	"sheetId": new_no, "startRowIndex": 0, "endRowIndex": 4,
-		},
-		"pasteType": "PASTE_NORMAL",
+	    'copyPaste': {
+		    "source": {
+			    "sheetId": 0, "startRowIndex": 0, "endRowIndex": 4,
+		    },
+		    "destination": {
+		    	"sheetId": new_no, "startRowIndex": 0, "endRowIndex": 4,
+			},
+			"pasteType": "PASTE_NORMAL",
 	    }
 	})
 	batchUpdateRequest = {'requests': requests}
 	service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
 
 	sh = gc.open_by_url(SS_ADDRESS)
-	worksheet_new = sh.worksheet('new')
+	worksheet_new = sh.worksheet(title)
 
 	'''
 	### Read Data ###
@@ -129,10 +126,14 @@ def hunterdon_write(SS_ADDRESS, key, old_id, sheetname):
 	with open("data-sale-bakerrec-.csv","rb") as csvfile:
 		filereader = csv.reader(csvfile)
 		data = list(filereader)
-		#row_count = len(data)
+		row_count = len(data)
+
+	print "--------------------------------------------------"
+	print "Hunterdon County has " + str(row_count/8) + " items!"
+	print "--------------------------------------------------"
 
 	start = 6
-	for line in data[1:]:
+	for index, line in enumerate(data[1:], start=0): 
 		#print line
 		if line[0] is not "":
 			try:
@@ -143,19 +144,16 @@ def hunterdon_write(SS_ADDRESS, key, old_id, sheetname):
 				address = worksheet_all.cell(cell.row, 6).value
 				town = ""
 
+
 				print str(cell.row) + "/" + str(cell.col) + ": " + str(cell.value)
 				requests = []
 				requests.append({
-				    'cutPaste': {
+				    'copyPaste': {
 					    "source": {
-						    "sheetId": 0,
-							"startRowIndex": cell.row - 1,
-							"endRowIndex": cell.row,
+						    "sheetId": 0, "startRowIndex": cell.row - 1, "endRowIndex": cell.row,
 					    },
 					    "destination": {
-						  	"sheetId": new_no,
-						  	"rowIndex": start - 1,
-							"columnIndex": 0,
+						  	"sheetId": new_no, "startRowIndex": start - 1, "endRowIndex": start,
 					  },
 						"pasteType": "PASTE_NORMAL",
 				    }
@@ -166,30 +164,42 @@ def hunterdon_write(SS_ADDRESS, key, old_id, sheetname):
 				service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
 				worksheet_new.update_cell(start, 9, line[47]) #upset
 				worksheet_new.update_cell(start, 1, date + "->" + line[38]) #date
-				worksheet_new.update_cell(start, 18, line[63]) #status
+				worksheet_new.update_cell(start, 16, line[63]) #status
 				
 
 			except gspread.CellNotFound as err:
 				print ("CellNotFound!")
-			
+
 				worksheet_new.update_cell(start, 1, line[38]) #date
 				worksheet_new.update_cell(start, 3, line[0]) #case
 				address = line[55]
-				city = line[71]
+				city = line[62]
 				town = " ".join(city.split()[2:])
 				worksheet_new.update_cell(start, 6, line[55] + "\n" + town + " NJ") #add
 				#worksheet.update_cell(start, 7, town) #city
-				worksheet_new.update_cell(start, 18, line[63]) #status
 				worksheet_new.update_cell(start, 9, line[47]) #upset
+				worksheet_new.update_cell(start, 5, line[70]) #firm
+
+				worksheet_new.update_cell(start, 16, data[index+3][1]) #status
+				worksheet_new.update_cell(start, 4, data[index+5][1]) #plantiff
+				#worksheet_new.update_cell(start, 18, data[index+6][1]) #defe
 
 			except ValueError as err:
 				continue
 
-			zillow = zillow_functions.findzillow(address, town)
-			print zillow
+			#zillow = zillow_functions.findzillow(address, town)
+			#print zillow
 			#worksheet.update_cell(start, 7, "\n".join(zillow[3][:]) + "\n" + town)
 			#worksheet.update_cell(start, 14, "\n".join(zillow[0][:])) #zillowID
-			worksheet_new.update_cell(start, 14, "\n".join(zillow[1][:])) #zestimate
-			add = worksheet_new.cell(start, 6).value
+			zipcode = address.split(" ")[-1:]
+			print zipcode
+			if zipcode[0].isdigit():
+				#print "IS DIGIT"
+				zillow = zillow_functions.find_zillow_by_zip(address, zipcode)
+			else:
+				zillow = zillow_functions.findzillow(address, town)
+			print zillow
+			worksheet_new.update_cell(start, 12, zillow[1]) #zestimate
+			#add = worksheet_new.cell(start, 6).value
 			#worksheet.update_cell(start, 6, "\n".join(zillow[2][:])+ ", " + add)
 			start=start+1

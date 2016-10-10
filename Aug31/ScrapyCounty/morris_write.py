@@ -30,10 +30,14 @@ def morris_write(SS_ADDRESS, key):
 		data = list(filereader)
 		row_count = len(data)
 
+	print "------------------------------------------"
+	print "Morris County has " + str(row_count) + " items!"
+	print "------------------------------------------"
+
 	requests = []
 	requests.append({
 	    'insertDimension': {
-	        "range": {"sheetId": sheetID, "dimension": 1, "startIndex": 5, "endIndex": 1 + row_count},
+	        "range": {"sheetId": sheetID, "dimension": 1, "startIndex": 5, "endIndex": 5 + row_count},
 	        "inheritFromBefore": False,
 	    }
 	})
@@ -46,7 +50,7 @@ def morris_write(SS_ADDRESS, key):
 		if line[0] is not "":
 			try:
 				caseno = line[3]
-				print caseno
+				#print caseno
 				cell = worksheet.find(caseno)
 				#date = worksheet.cell(cell.row, 1).value
 				worksheet.update_cell(cell.row, 1, line[8] + "->" + line[4]) #date
@@ -68,6 +72,11 @@ def morris_write(SS_ADDRESS, key):
 							"columnIndex": 0,
 					  },
 						"pasteType": "PASTE_NORMAL",
+				    }
+				})
+				requests.append({
+				    'deleteDimension': {
+				        "range": {"sheetId": sheetID, "dimension": 1, "startIndex": cell.row - 1, "endIndex": cell.row},
 				    }
 				})
 
@@ -93,5 +102,5 @@ def morris_write(SS_ADDRESS, key):
 			zip = address.split(' ')[-1:]
 			zillow = zillow_functions.find_zillow_by_zip(address, zip)
 			print zillow
-			worksheet.update_cell(start, 14, zillow[0])#zestimate
+			worksheet.update_cell(start, 14, zillow[1])#zestimate
 			start = start + 1
