@@ -8,7 +8,8 @@ Implemented with Python 2.7 by Xi Zhang for Noah Luk at LNH Holding LLC
     - Essex
     - Bergen
     - Hunterdon
-    - Middlesex coming soon.
+    - Middlesex
+    - Mercer comming soon
 
 ## Installation:
 Check pip:
