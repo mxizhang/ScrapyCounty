@@ -16,7 +16,7 @@ def bergen_write(SS_ADDRESS, key):
 	'''
 	*** ***
 	'''
-	worksheet = sh.get_worksheet(2)
+	worksheet = sh.get_worksheet(0)
 
 	scope_gl = 'https://www.googleapis.com/auth/spreadsheets'
 	credentials_gl = ServiceAccountCredentials.from_json_keyfile_name(key, scope_gl)

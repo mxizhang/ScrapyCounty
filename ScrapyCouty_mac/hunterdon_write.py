@@ -95,7 +95,7 @@ def hunterdon_write(SS_ADDRESS, key, old_id, sheetname):
 	print "Creating new sheet ..."
 	requests = []
 	new_no = random.randrange(1, 99999999)
-	title = time.strftime("%m/%d/%Y")
+	title = time.strftime("%d/%m/%Y")
 	requests.append({
 	    'addSheet': {
 		    "properties": { "sheetId": new_no, "title": title,
@@ -117,7 +117,7 @@ def hunterdon_write(SS_ADDRESS, key, old_id, sheetname):
 	service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
 
 	sh = gc.open_by_url(SS_ADDRESS)
-	worksheet_new = sh.worksheet(title)
+	worksheet_new = sh.worksheet('new')
 
 	'''
 	### Read Data ###
@@ -199,7 +199,7 @@ def hunterdon_write(SS_ADDRESS, key, old_id, sheetname):
 			else:
 				zillow = zillow_functions.findzillow(address, town)
 			print zillow
-			worksheet_new.update_cell(start, 12, zillow[1]) #zestimate
+			worksheet_new.update_cell(start, 12, "\n".join(zillow[1][:])) #zestimate
 			#add = worksheet_new.cell(start, 6).value
 			#worksheet.update_cell(start, 6, "\n".join(zillow[2][:])+ ", " + add)
 			start=start+1

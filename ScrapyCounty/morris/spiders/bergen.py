@@ -28,11 +28,11 @@ class BergenSpider(Spider):
     start_urls = ["http://salesweb.civilview.com/"]
 
     def __init__(self):
-    	self.driver = webdriver.PhantomJS()
+    	self.driver = webdriver.PhantomJS(executable_path="C:/Users/flipp/phantomjs-2.1.1-windows/bin/phantomjs.exe")
 
     def parse(self, response):
         self.driver.get(response.url)
-        el = self.driver.find_element_by_xpath('//a[@href="/Sales/SalesSearch?countyId=9"]')
+        el = self.driver.find_element_by_xpath('//a[@href="/Sales/SalesSearch?countyId=7"]')
         el.click()
         time.sleep(1)
         

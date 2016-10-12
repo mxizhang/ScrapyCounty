@@ -19,7 +19,7 @@ def download_file(download_url):
 
 def convert_to_xlsx():
 	files = {'f': (FILENAME_PDF, open(FILENAME_PDF, 'rb'))}
-	response = requests.post("https://pdftables.com/api?key=f46oilu9b3vs&format=xlsx-single", files=files)
+	response = requests.post("https://pdftables.com/api?key=lhfxwj5qn8jg", files=files)
 	response.raise_for_status() # ensure we notice bad responses
 	with open(FILENAME_CSV, "wb") as f:
 	    f.write(response.content)

@@ -13,7 +13,7 @@ def morris_write(SS_ADDRESS, key):
 	credentials_gs = ServiceAccountCredentials.from_json_keyfile_name(key, scope_gs)
 	gc = gspread.authorize(credentials_gs)
 	sh = gc.open_by_url(SS_ADDRESS)
-	worksheet = sh.get_worksheet(0)
+	worksheet = sh.worksheet('Sheet10')
 
 	scope_gl = 'https://www.googleapis.com/auth/spreadsheets'
 	credentials_gl = ServiceAccountCredentials.from_json_keyfile_name(key, scope_gl)
@@ -50,7 +50,7 @@ def morris_write(SS_ADDRESS, key):
 		if line[0] is not "":
 			try:
 				caseno = line[3]
-				#print caseno
+				print caseno
 				cell = worksheet.find(caseno)
 				#date = worksheet.cell(cell.row, 1).value
 				worksheet.update_cell(cell.row, 1, line[8] + "->" + line[4]) #date

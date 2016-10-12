@@ -28,7 +28,7 @@ class EssexSpider(Spider):
     start_urls = ["http://salesweb.civilview.com"]
 
     def __init__(self):
-    	self.driver = webdriver.PhantomJS(executable_path="C:/Users/flipp/phantomjs-2.1.1-windows/bin/phantomjs.exe")
+    	self.driver = webdriver.PhantomJS()
 
     def parse(self, response):
         self.driver.get(response.url)

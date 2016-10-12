@@ -7,13 +7,12 @@ import httplib2
 import zillow_functions
 from apiclient import discovery
 
-def morris_write(SS_ADDRESS, key):
+def essex_write(SS_ADDRESS, key):
 
 	scope_gs = ['https://spreadsheets.google.com/feeds']
 	credentials_gs = ServiceAccountCredentials.from_json_keyfile_name(key, scope_gs)
 	gc = gspread.authorize(credentials_gs)
 	sh = gc.open_by_url(SS_ADDRESS)
-	worksheet = sh.get_worksheet(0)
 
 	scope_gl = 'https://www.googleapis.com/auth/spreadsheets'
 	credentials_gl = ServiceAccountCredentials.from_json_keyfile_name(key, scope_gl)
@@ -24,14 +23,18 @@ def morris_write(SS_ADDRESS, key):
 	spreadsheetID = SS_ADDRESS.split('/')[5]
 	sheetID = SS_ADDRESS.split('/')[6].split('=')[-1:][0]
 	print spreadsheetID + " & " + sheetID
+	'''
+	!!! Change worksheet number to '0' before used
+	'''
+	worksheet = sh.get_worksheet(1)
 
-	with open("morris_items.csv","rb") as csvfile:
+	with open("essex_items.csv","rb") as csvfile:
 		filereader = csv.reader(csvfile)
 		data = list(filereader)
 		row_count = len(data)
 
 	print "------------------------------------------"
-	print "Morris County has " + str(row_count) + " items!"
+	print "Essex County has " + str(row_count) + " items!"
 	print "------------------------------------------"
 
 	requests = []
@@ -49,11 +52,11 @@ def morris_write(SS_ADDRESS, key):
 		#print line
 		if line[0] is not "":
 			try:
-				caseno = line[3]
-				#print caseno
+				caseno = line[4]
+				print caseno
 				cell = worksheet.find(caseno)
 				#date = worksheet.cell(cell.row, 1).value
-				worksheet.update_cell(cell.row, 1, line[8] + "->" + line[4]) #date
+				worksheet.update_cell(cell.row, 1, line[9] + "->" + line[0]) #date
 				worksheet.update_cell(start, 9, line[2]) #upset
 				address = worksheet.cell(cell.row, 6).value
 
@@ -86,12 +89,12 @@ def morris_write(SS_ADDRESS, key):
 			except gspread.CellNotFound as err:
 				print ("CellNotFound!")
 			
-				worksheet.update_cell(start, 1, line[8] + "->" + line[4]) #date
+				worksheet.update_cell(start, 1, line[9] + " -> " + line[0]) #date
 				worksheet.update_cell(start, 2, line[1]) #shf no
-				worksheet.update_cell(start, 3, line[3]) #case
-				worksheet.update_cell(start, 4, "PLF: " + line[0] + "\n" + "DEF: " + line[7])
-				worksheet.update_cell(start, 5, line[5]) #att
-				worksheet.update_cell(start, 6, line[6]) #add
+				worksheet.update_cell(start, 3, line[4]) #case
+				worksheet.update_cell(start, 4, "PLF: " + line[5] + "\n" + "DEF: " + line[8])
+				worksheet.update_cell(start, 5, line[6] + "\n" + "Phone: " + line[3] ) #att
+				worksheet.update_cell(start, 6, address) #add
 				worksheet.update_cell(start, 9, line[2]) #upset
 				address = line[6]
 
