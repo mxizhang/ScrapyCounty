@@ -35,7 +35,7 @@ for index, row in enumerate(ws.rows):
 		else:
 			item.append(row[3].value)
 	
-	elif row[1].value == "Attorney":
+	elif row[2].value == "Attorney":
 		if row[3].value == None:
 			item.append(row[4].value)
 		else:

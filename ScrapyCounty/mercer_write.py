@@ -11,7 +11,7 @@ from apiclient import discovery
 ['ori sale date', 'file no', 'court no', 'cur sale date', 'plf', 'asset', 'def', 'att', 'address']
 '''
 
-def morris_write(SS_ADDRESS, key):
+def mercer_write(SS_ADDRESS, key):
 
 	scope_gs = ['https://spreadsheets.google.com/feeds']
 	credentials_gs = ServiceAccountCredentials.from_json_keyfile_name(key, scope_gs)

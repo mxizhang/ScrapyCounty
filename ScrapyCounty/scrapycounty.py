@@ -35,6 +35,7 @@ import middlesex_write
 import hunterdon_write
 import hunterdon_save
 import bergen_write
+import mercer_write
 
 MRS_ADDS = 'https://docs.google.com/spreadsheets/d/1v5sNJuIiLGwU6fH9Kpfr9XRxQCxrf7bx_PR_1fNA_6Q/edit#gid=0'
 ESS_ADDS = 'https://docs.google.com/spreadsheets/d/1isOSOsyvGFTuCZwuqEEkmou0uxWm9AVCrNx_V0_JDmc/edit#gid=0'
@@ -42,6 +43,7 @@ BGN_ADDS = 'https://docs.google.com/spreadsheets/d/1aZBeaENA0xjxqpmKYNDrjIM4c_zy
 HTD_ADDS = 'https://docs.google.com/spreadsheets/d/1kjiHt_daqvIueDw6qD7wk75mTFo0_ubRUFCnHNn4J8E/edit#gid=0'
 MIS_ADDS = 'https://docs.google.com/spreadsheets/d/1W-6ngztdGnx-N2-YA8v7dtOgw39OYi9cauYtMa4t-lw/edit#gid=0'
 UNI_ADDS = 'https://docs.google.com/spreadsheets/d/1koChyqS8UbXCoWV662YY8zVXT57lR4snW6j5aMrU1Rw/edit#gid=0'
+MEC_ADDS = 'https://docs.google.com/spreadsheets/d/1c2AiIahiFZFA37FCa5SJOcsWDXJQxa3qwmHw0rlB7eY/edit#gid=0'
 KEY = 'flipnj-4f3fbac03d23.json'
 
 def main():
@@ -49,6 +51,7 @@ def main():
     print "         Welcome to Scrapy County!"
     print "Choose county:"
     print "              -- Morris (M)"
+    print "              -- Mercer (C)"
     print "              -- Essex (E)"
     print "              -- Bergen (B)"
     print "              -- Hunterdon (H)"
@@ -58,6 +61,8 @@ def main():
     num = raw_input("your choice?")
     if num.upper() == 'M':
         morris(MRS_ADDS, KEY)
+    elif num.upper() == 'C':
+        mercer(MEC_ADDS, KEY)
     elif num.upper() == 'E':
         essex(ESS_ADDS, KEY)
     elif num.upper() == 'B':
@@ -79,6 +84,12 @@ def main():
         union(UNI_ADDS, KEY)
     else:
         print "NOT FOUND! "
+
+def mercer(address, key):
+    print "Mercer County is called."
+    subprocess.call("python mercer_convert.py", shell=True)
+    mercer_write.mercer_write(address, key)
+    njlis.mercer_lis('mercer_lisp')
 
 def morris(address, key):
     print "Morris County is called."
@@ -122,6 +133,7 @@ def middlesex(address, key):
 
 def union(address, key):
     print "Union County is called."
+    
     try:
         os.remove("union_items.csv")
     except OSError:

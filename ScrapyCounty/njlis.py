@@ -1,9 +1,13 @@
+# -*- coding: utf-8 -*-
+# -*- author: mxiz -*-
 import csv
 import os
 import zillow_functions
+import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import NoSuchElementException
 
 def njlis():
 	driver = webdriver.PhantomJS(executable_path="C:/Users/flipp/phantomjs-2.1.1-windows/bin/phantomjs.exe")
@@ -36,8 +40,55 @@ def essex_lis(foldername):
 
 	for index, line in enumerate(data[1:], start=0):
 		caseno = line[4]
-		address = line[7]
-		zip = address.split(' ')[-1:][0]
+		address = line[7].split('\n')[0]
+		zip = line[7].split('\n')[-1:][0].split(' ')[-1:][0]
+		if address is not "":
+			try:
+				street = address.split(' ')[0] + " " + address.split(' ')[1]
+			except IndexError:
+				street = address.split(' ')[0]
+
+		street_input = driver.find_element_by_name("Address")
+		zip_input = driver.find_element_by_name("Zip_Code")
+
+		street_input.clear()
+		zip_input.clear()
+
+		street_input.send_keys(street)
+		if zip.isdigit():
+			print "Case: " + caseno + ": " + str(zip) + " + " + str(street)
+			zip_input.send_keys(zip)
+		else:
+			print str(zip) + " + " + str(street)
+
+		try:
+			driver.find_element_by_name("submit").click()
+			driver.get_screenshot_as_file(foldername + '/' + caseno + '.png');
+			driver.back()
+		except NoSuchElementException as e:
+			driver.get_screenshot_as_file(foldername + '/' + caseno + '_ERROR.png');
+			print "No Such Element Exception"
+			driver.back()
+			continue
+	driver.quit()
+
+def mercer_lis(foldername):
+	try:
+	    os.makedirs('./' + foldername)
+	except OSError:
+	    pass
+
+	driver = njlis()
+	
+	print "#################Reading Data################"
+	with open("mercer_items.csv","rb") as csvfile:
+		filereader = csv.reader(csvfile)
+		data = list(filereader)
+
+	for index, line in enumerate(data[1:], start=0):
+		caseno = line[2]
+		address = line[7].split('\n')[0]
+		zip = line[7].split('\n')[-1:][0].split(' ')[-1:][0]
 		if address is not "":
 			try:
 				street = address.split(' ')[0] + " " + address.split(' ')[1]
@@ -57,10 +108,15 @@ def essex_lis(foldername):
 		else:
 			print str(zip) + " + " + str(street)
 
-		driver.find_element_by_name("submit").click()
-
-		driver.get_screenshot_as_file(foldername + '/' + caseno + '.png');
-		driver.back()
+		try:
+			driver.find_element_by_name("submit").click()
+			driver.get_screenshot_as_file(foldername + '/' + caseno + '.png');
+			driver.back()
+		except NoSuchElementException as e:
+			driver.get_screenshot_as_file(foldername + '/' + caseno + '_ERROR.png');
+			print "No Such Element Exception"
+			driver.back()
+			continue
 	driver.quit()
 
 def morris_lis(foldername):
@@ -78,8 +134,8 @@ def morris_lis(foldername):
 
 	for index, line in enumerate(data[1:], start=0):
 		caseno = line[3]
-		address = line[6]
-		zip = address.split(' ')[-1:][0]
+		address = line[6].split('\n')[0]
+		zip = line[6].split('\n')[-1:][0].split(' ')[-1:][0]
 		if address is not "":
 			try:
 				street = address.split(' ')[0] + " " + address.split(' ')[1]
@@ -99,10 +155,15 @@ def morris_lis(foldername):
 		else:
 			print str(zip) + " + " + str(street)
 
-		driver.find_element_by_name("submit").click()
-
-		driver.get_screenshot_as_file(foldername + '/' + caseno + '.png');
-		driver.back()
+		try:
+			driver.find_element_by_name("submit").click()
+			driver.get_screenshot_as_file(foldername + '/' + caseno + '.png');
+			driver.back()
+		except NoSuchElementException as e:
+			driver.get_screenshot_as_file(foldername + '/' + caseno + '_ERROR.png');
+			print "No Such Element Exception"
+			driver.back()
+			continue
 	driver.quit()
 
 def bergen_lis(foldername):
@@ -120,8 +181,8 @@ def bergen_lis(foldername):
 
 	for index, line in enumerate(data[1:], start=0):
 		caseno = line[3]
-		address = line[6]
-		zip = address.split(' ')[-1:][0]
+		address = line[6].split('\n')[0]
+		zip = line[6].split('\n')[-1:][0].split(' ')[-1:][0]
 		if address is not "":
 			try:
 				street = address.split(' ')[0] + " " + address.split(' ')[1]
@@ -141,10 +202,15 @@ def bergen_lis(foldername):
 		else:
 			print str(zip) + " + " + str(street)
 
-		driver.find_element_by_name("submit").click()
-
-		driver.get_screenshot_as_file(foldername + '/' + caseno + '.png');
-		driver.back()
+		try:
+			driver.find_element_by_name("submit").click()
+			driver.get_screenshot_as_file(foldername + '/' + caseno + '.png');
+			driver.back()
+		except NoSuchElementException as e:
+			driver.get_screenshot_as_file(foldername + '/' + caseno + '_ERROR.png');
+			print "No Such Element Exception"
+			driver.back()
+			continue
 	driver.quit()
 
 def hunterdon_lis(foldername):
@@ -214,8 +280,8 @@ def middlesex_lis(foldername):
 
 	for index, line in enumerate(data[1:], start=0):
 		caseno = line[3]
-		address = line[7]
-		zip = line[4]
+		address = line[7].split('\n')[0]
+		zip = line[7].split('\n')[-1:][0].split(' ')[-1:][0]
 		street = address.split(' ')[0] + " " + address.split(' ')[1]
 
 		street_input = driver.find_element_by_name("Address")
@@ -231,10 +297,15 @@ def middlesex_lis(foldername):
 		else:
 			print str(zip) + " + " + str(street)
 
-		driver.find_element_by_name("submit").click()
-
-		driver.get_screenshot_as_file(foldername + '/' + caseno + '.png');
-		driver.back()
+		try:
+			driver.find_element_by_name("submit").click()
+			driver.get_screenshot_as_file(foldername + '/' + caseno + '.png');
+			driver.back()
+		except NoSuchElementException as e:
+			driver.get_screenshot_as_file(foldername + '/' + caseno + '_ERROR.png');
+			print "No Such Element Exception"
+			driver.back()
+			continue
 	driver.quit()
 
 
@@ -253,8 +324,8 @@ def union_lis(foldername):
 
 	for index, line in enumerate(data[1:], start=0):
 		caseno = line[3]
-		address = line[6]
-		zip = address.split(' ')[-1:][0]
+		address = line[6].split('\n')[0]
+		zip = line[6].split('\n')[-1:][0].split(' ')[-1:][0]
 		if address is not "":
 			try:
 				street = address.split(' ')[0] + " " + address.split(' ')[1]
@@ -274,8 +345,15 @@ def union_lis(foldername):
 		else:
 			print str(zip) + " + " + str(street)
 
-		driver.find_element_by_name("submit").click()
+		#time.sleep(0.5)
+		try:
+			driver.find_element_by_name("submit").click()
+			driver.get_screenshot_as_file(foldername + '/' + caseno + '.png');
+			driver.back()
+		except NoSuchElementException as e:
+			driver.get_screenshot_as_file(foldername + '/' + caseno + '_ERROR.png');
+			print "No Such Element Exception"
+			driver.back()
+			continue
 
-		driver.get_screenshot_as_file(foldername + '/' + caseno + '.png');
-		driver.back()
 	driver.quit()
