@@ -15,12 +15,13 @@ def findzillow(address, zipcode):
 		zpid = tree.xpath('//zpid/text()')
 		prices = tree.xpath('//amount/text()')
 		link = tree.xpath('//homedetails/text()')
+		zipcode = tree.xpath('//zipcode/text()')
 		try:
-			zillow = [zpid[0], prices[0], link[0]]
+			zillow = [zpid[0], prices[0], link[0], zipcode[0]]
 			return zillow
 		except IndexError as err:
 			print ("Index expecption!")
-			return ['', '', '']
+			return ['', '', '', '']
 	try:
 		deep_search_response = zillow_data.get_deep_search_results(address, zipcode)
 		result = GetDeepSearchResults(deep_search_response)
@@ -32,15 +33,15 @@ def findzillow(address, zipcode):
 		tree = html.fromstring(page.content)
 		prices = tree.xpath('//amount/text()')
 		link = tree.xpath('//homedetails/text()')
-		zillow = [zid, prices[0], link[0]]
+		zillow = [zid, prices[0], link[0], zipcode[0]]
 		return zillow
 
 	except ZillowError as err:
 		print ("No Zillow Found!")
-		return ['', '', '']
+		return ['', '', '', '']
 	except IndexError as err:
 		print ("Index expecption!")
-		return ['', '', '']
+		return ['', '', '', '']
 '''
 address = "6 WERTSVILLE ROAD EAST AMWELL NJ"
 z = findzillow(address, '')

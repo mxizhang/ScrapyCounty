@@ -16,26 +16,28 @@ BGN_ADDS = 'https://docs.google.com/spreadsheets/d/1aZBeaENA0xjxqpmKYNDrjIM4c_zy
 HTD_ADDS = 'https://docs.google.com/spreadsheets/d/1kjiHt_daqvIueDw6qD7wk75mTFo0_ubRUFCnHNn4J8E/edit#gid=0'
 MIS_ADDS = 'https://docs.google.com/spreadsheets/d/1W-6ngztdGnx-N2-YA8v7dtOgw39OYi9cauYtMa4t-lw/edit#gid=0'
 UNI_ADDS = 'https://docs.google.com/spreadsheets/d/1koChyqS8UbXCoWV662YY8zVXT57lR4snW6j5aMrU1Rw/edit#gid=0'
-TEST_ADD = 'https://docs.google.com/spreadsheets/d/1em7oEKzfA3qbNcHdn8d892y0rJvxjF5UnUY7XK6Yyik/edit#gid=0'
+#TEST_ADD = 'https://docs.google.com/spreadsheets/d/1em7oEKzfA3qbNcHdn8d892y0rJvxjF5UnUY7XK6Yyik/edit#gid=0'
+MEC_ADDS = 'https://docs.google.com/spreadsheets/d/1c2AiIahiFZFA37FCa5SJOcsWDXJQxa3qwmHw0rlB7eY/edit#gid=0'
 
-KEY = 'ScrapyCountyWindows-86f453b644e3.json'
+KEY = 'flipnj-4f3fbac03d23.json'
 
-morris = {'name': 'Morris', 'csv': 'morris_items.csv', 'add': MIS_ADDS}
+morris = {'name': 'Morris', 'csv': 'morris_items.csv', 'add': MRS_ADDS}
 essex = {'name': 'Essex', 'csv': 'essex_items.csv', 'add': ESS_ADDS}
 bergen = {'name': 'Bergen', 'csv': 'bergen_items.csv', 'add': BGN_ADDS}
 hunterdon = {'name': 'Hunterdon', 'csv': 'hunterdon_items.csv', 'add': HTD_ADDS}
 union = {'name': 'Union', 'csv': 'union_items.csv', 'add': UNI_ADDS}
-mercer = {'name': 'Mercer', 'csv': 'mercer_items.csv', 'add': MRS_ADDS}
-test = {'name': 'Test', 'csv': 'essex_items.csv', 'add': TEST_ADD}
+mercer = {'name': 'Mercer', 'csv': 'mercer_items.csv', 'add': MEC_ADDS}
+middlesex = {'name': 'Middlesex', 'csv': 'middlesex_items.csv', 'add': MIS_ADDS}
+#test = {'name': 'Test', 'csv': 'essex_items.csv', 'add': TEST_ADD}
 
-COUNTY = [morris, essex, bergen, hunterdon, union, mercer, test]
+COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex]
 '''
 0             1       2      3        4    5   6    7      8    9
 sale_date,sheriff_no,upset,att_ph,case_no,plf, att,address,dfd,schd_data
 1      2            3           6          7         10       11        12       13
 date, SHERIFF'S #, ADDRESS, Judegment,	NEW UPSET, PLF/DEF, ATTY/FIRM, DOCKET#, Zillow
 '''
-def items_write(num, old_tab_name):
+def item_write(num, old_tab_name):
 	# Get credentials
 	# Get Google Sheets official API
 	county = COUNTY[num]
@@ -197,12 +199,13 @@ def items_write(num, old_tab_name):
 			zillow = findzillow(address, zipcode)
 		else:
 			zillow = findzillow(address, '')
+			address = address + ' ' + zillow[3] if zillow[3] != ''
 		print zillow
 		worksheet_new.update_cell(start, 13, zillow[1]) #zestimate
 		if zillow[2] == '':
 			#print line
 			worksheet_new.update_cell(start, 3, address) #add	
-		else: 
+		else:
 			requests = []
 			requests.append({
 			    'updateCells': {
