@@ -29,7 +29,11 @@ union = {'name': 'Union', 'csv': 'union_items.csv', 'add': UNI_ADDS}
 mercer = {'name': 'Mercer', 'csv': 'mercer_items.csv', 'add': MEC_ADDS}
 middlesex = {'name': 'Middlesex', 'csv': 'middlesex_items.csv', 'add': MIS_ADDS}
 #test = {'name': 'Test', 'csv': 'essex_items.csv', 'add': TEST_ADD}
-
+'''
+result = service.spreadsheets().values().get(
+    spreadsheetId=spreadsheetID, range='C6', valueRenderOption='FORMULA').execute()
+print result['values'][0][0]
+'''
 COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex]
 '''
 0             1       2      3        4    5   6    7      8    9
