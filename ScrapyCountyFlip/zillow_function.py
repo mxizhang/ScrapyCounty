@@ -10,30 +10,27 @@ def findzillow(address, zipcode):
 		#print "No Zipcode"
 		address = address.replace(' ', '+')
 		url_search = 'http://www.zillow.com/webservice/GetSearchResults.htm?zws-id=' + ZIL_KEY +'&address=' + address + '&citystatezip=NJ'
-		#print url_search
+		print url_search
+
 		tree = html.fromstring(requests.get(url_search).content)
 		zpid = tree.xpath('//zpid/text()')
 		prices = tree.xpath('//amount/text()')
 		link = tree.xpath('//homedetails/text()')
 		zipcode = tree.xpath('//zipcode/text()')
-		try:
-			zillow = [zpid[0], prices[0], link[0], zipcode[0]]
-			return zillow
-		except IndexError as err:
-			print ("Index expecption!")
-			return ['', '', '', '']
-	try:
+	else:
 		deep_search_response = zillow_data.get_deep_search_results(address, zipcode)
 		result = GetDeepSearchResults(deep_search_response)
-		zid = result.zillow_id
-		#print zid
+		zpid = [result.zillow_id]
+		#print zpid
 		url = 'http://www.zillow.com/webservice/GetZestimate.htm?zws-id=' + ZIL_KEY +'&zpid=' + zid
-		#print url
+		print url
 		page = requests.get(url)
 		tree = html.fromstring(page.content)
 		prices = tree.xpath('//amount/text()')
 		link = tree.xpath('//homedetails/text()')
-		zillow = [zid, prices[0], link[0], zipcode[0]]
+		
+	try:
+		zillow = [zpid[0], prices[0], link[0], zipcode[0]]
 		return zillow
 
 	except ZillowError as err:
@@ -43,11 +40,7 @@ def findzillow(address, zipcode):
 		print ("Index expecption!")
 		return ['', '', '', '']
 '''
-address = "6 WERTSVILLE ROAD EAST AMWELL NJ"
+address = "141 MAIN STREET HAMPTON"
 z = findzillow(address, '')
 print z
-if z[2] == '':
-	print "=="
-else:
-	print "y"
 '''

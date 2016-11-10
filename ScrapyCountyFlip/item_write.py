@@ -51,13 +51,15 @@ def item_write(num, old_tab_name):
 	worksheet_all_name = find_sheetname(spreadsheetID, 0)
 	worksheet_all = get_gspread(SS_ADDRESS, worksheet_all_name)
 
+	NEW = True
+
 	if worksheet_old_id is None or worksheet_all_name is None:
 		print "No Such Tab Name"
 		exit(0)
 
 	'''
 	### back up ###
-	'''
+	
 	print "Backing Up ..."
 	startrow = 6
 	caseno = worksheet_old.cell(startrow, 2).value
@@ -100,7 +102,7 @@ def item_write(num, old_tab_name):
 		caseno = worksheet_old.cell(startrow, 2).value
 		#print str(startrow) + " not null: " + str(caseno)
 
-	'''
+	
 	### New Sheet ###
 	'''
 	try:
@@ -147,10 +149,12 @@ def item_write(num, old_tab_name):
 		#print line
 		try:
 			caseno = line[1]
-			print caseno
+			#print caseno
 			cell = worksheet_all.find(caseno)
+			NEW = False
 			date = worksheet_all.cell(cell.row, 1).value
 			address = worksheet_all.cell(cell.row, 3).value
+			address = address.replace(',', ' ')
 			address = address.replace('\n', ' ')
 			print str(cell.row) + "/" + str(cell.col) + ": " + str(cell.value)
 
@@ -172,7 +176,8 @@ def item_write(num, old_tab_name):
 
 		except gspread.CellNotFound as err:
 			print ("CellNotFound!")
-			if line[0] == line[9]:
+			NEW = True
+			if line[0] == line[9] or line[9] == 0:
 				worksheet_new.update_cell(start, 1, line[0]) #date
 			else:
 				worksheet_new.update_cell(start, 1, line[9] + '->' + line[0]) #date
@@ -199,13 +204,15 @@ def item_write(num, old_tab_name):
 			zillow = findzillow(address, zipcode)
 		else:
 			zillow = findzillow(address, '')
-			address = address + ' ' + zillow[3] if zillow[3] != ''
+			if zillow[3] != '':
+				print "!!!Address replaced"
+				address = address + ' ' + zillow[3] 
 		print zillow
 		worksheet_new.update_cell(start, 13, zillow[1]) #zestimate
-		if zillow[2] == '':
+		if zillow[2] == '' and NEW:
 			#print line
 			worksheet_new.update_cell(start, 3, address) #add	
-		else:
+		elif NEW:
 			requests = []
 			requests.append({
 			    'updateCells': {
