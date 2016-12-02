@@ -51,9 +51,6 @@ Check pip:
 	
 	>pip install --upgrade google-api-python-client
 
-- pyzillow <https://pypi.python.org/pypi/pyzillow/0.5.5>
-	>Install: $ pip install pyzillow
-
 - Obtain zillow's official API :
   	<http://www.zillow.com/howto/api/APIOverview.htm>
 
@@ -67,8 +64,6 @@ Check pip:
 - httplib2
  	>Install: pip install httplib2
 
-- DataBaker <https://scraperwiki.github.io/eot-docs/>
-	>Install: pip install databaker
 
 ## Before run:
 	* Make sure change spreadsheets address
