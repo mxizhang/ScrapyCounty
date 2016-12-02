@@ -67,6 +67,8 @@ Check pip:
 - httplib2
  	>Install: pip install httplib2
 
+- Openpyxl
+	>Install: pip install openpyxl
 
 ## Before run:
 	* Make sure change spreadsheets address
