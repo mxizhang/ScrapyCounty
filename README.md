@@ -19,6 +19,7 @@ Check pip:
 ### Part 1: (For scrapy crawler)
 - Scrapy <http://scrapy.org/>
 	>Install:  $ pip install scrapy
+	
 	!!!
 	On Windows with Error:
 	 ** make sure the development packages of libxml2 and libxslt are installed **
