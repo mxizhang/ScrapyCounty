@@ -19,6 +19,14 @@ Check pip:
 ### Part 1: (For scrapy crawler)
 - Scrapy <http://scrapy.org/>
 	>Install:  $ pip install scrapy
+	!!!
+	On Windows with Error:
+	 ** make sure the development packages of libxml2 and libxslt are installed **
+
+	1) download lxml & twisted wheel from here: http://www.lfd.uci.edu/~gohlke/pythonlibs/
+
+	3) pip install C:\Users\Home\Downloads\lxml- ......... .whl
+	!!!
 
 - Selenium <https://pypi.python.org/pypi/selenium>
 	>Install: $ pip install selenium
