@@ -72,11 +72,11 @@ def main():
 
 def mercer(number, name):
     print "Mercer County is called."
+    os.system("title Mercer County")
     print "!!! Step 1: Download sheriff_foreclosuresales_list.pdf from http://nj.gov/counties/mercer/pdfs/sheriff_foreclosuresales_list.pdf"
     print "!!! Step 2: Open http://www.pdftoexcel.com/"
     print "!!! Step 3: Upload sheriff_foreclosuresales_list.pdf and download .xlsx"
-    print "!!! Step 4: Open sheriff_foreclosuresales_list.xlsx and Delete first two blank rows"
-    print "!!! Step 5: Save as sheriff_foreclosuresales_list.xlsx in ScrapyCounty_windows folder"
+    print "!!! Step 4: Save as sheriff_foreclosuresales_list.xlsx in ScrapyCounty_windows folder"
     print "Please type Y to continue"
     num = raw_input("")
     if num.upper() == 'Y':
@@ -86,6 +86,7 @@ def mercer(number, name):
 
 def morris(number, name):
     print "Morris County is called."
+    os.system("title Morris County")
     try:
         os.remove("morris_items.csv")
     except OSError:
@@ -96,6 +97,7 @@ def morris(number, name):
 
 def bergen(number, name):
     print "Bergen County is called."
+    os.system("title Bergen County")
     try:
         os.remove("bergen_items.csv")
     except OSError:
@@ -106,7 +108,7 @@ def bergen(number, name):
 
 def essex(number, name):
     print "Essex County is called."
-    
+    os.system("title Essex County")
     try:
         os.remove("essex_items.csv")
     except OSError:
@@ -117,7 +119,8 @@ def essex(number, name):
     njlispendens.njlis_pic(number)
 
 def middlesex(number, name):
-    print "middlesex County is called."
+    print "MiddleSex County is called."
+    os.system("title MiddleSex County")
     try:
         os.remove("middlesex_items.csv")
     except OSError:
@@ -128,7 +131,7 @@ def middlesex(number, name):
 
 def union(number, name):
     print "Union County is called."
-    
+    os.system("title Union County")
     try:
         os.remove("union_items.csv")
     except OSError:

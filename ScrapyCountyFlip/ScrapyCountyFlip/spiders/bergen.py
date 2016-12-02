@@ -40,7 +40,7 @@ class BergenSpider(Spider):
         !!! FOR WINDOWS USER
         '''
         #self.driver = webdriver.PhantomJS(executable_path="c:/phantomjs-2.1.1-windows/bin/phantomjs.exe")
-        self.driver = webdriver.PhantomJS(executable_path="C:/Users/flipp/phantomjs-2.1.1-windows/bin/phantomjs.exe")
+        self.driver = webdriver.PhantomJS(executable_path="C:/phantomjs-2.1.1-windows/bin/phantomjs.exe")
 
     def parse(self, response):
         self.driver.get(response.url)
@@ -50,7 +50,7 @@ class BergenSpider(Spider):
         fr = next_weekday(datetime.datetime.today(), 4)
         FR = "%s/%s/%s" % (fr.month, fr.day, fr.year)
 
-        for i in range(1, 300):
+        for i in range(1, 1300):
             result = self.driver.find_element_by_xpath("//table/tbody/tr[%s]/td[1]/a" % i)
             date = self.driver.find_element_by_xpath("//table/tbody/tr[%s]/td[3]" % i).text
             if date != FR:

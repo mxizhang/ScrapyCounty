@@ -2,7 +2,7 @@
 # -*- author: mxiz -*-
 import csv
 import os
-import zillow_functions
+import zillow_function
 import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -35,15 +35,16 @@ def njlis():
 	return driver
 
 def njlis_pic(num):
+	foldername = COUNTY[num]['name'] + "_lisp"
 	try:
-	    os.makedirs('./' + COUNTY[num].name + "_lisp")
+	    os.makedirs('./' + COUNTY[num]['name'] + "_lisp")
 	except OSError:
 	    pass
 
 	driver = njlis()
 
 	print "#################Reading Data################"
-	with open(COUNTY[num].csv, "rb") as csvfile:
+	with open(COUNTY[num]['csv'], "rb") as csvfile:
 		filereader = csv.reader(csvfile)
 		data = list(filereader)
 

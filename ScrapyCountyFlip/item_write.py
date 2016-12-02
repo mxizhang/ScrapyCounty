@@ -42,6 +42,7 @@ sale_date,sheriff_no,upset,att_ph,case_no,plf, att,address,dfd,schd_data
 date, SHERIFF'S #, ADDRESS, Judegment,	NEW UPSET, PLF/DEF, ATTY/FIRM, DOCKET#, Zillow
 '''
 def item_write(num, old_tab_name):
+
 	# Get credentials
 	# Get Google Sheets official API
 	county = COUNTY[num]
@@ -61,9 +62,9 @@ def item_write(num, old_tab_name):
 		print "No Such Tab Name"
 		exit(0)
 
-	'''
-	### back up ###
 	
+	### back up ###
+	'''
 	print "Backing Up ..."
 	startrow = 6
 	caseno = worksheet_old.cell(startrow, 2).value
@@ -147,91 +148,98 @@ def item_write(num, old_tab_name):
 	print "--------------------------------------------------"
 	print county['name'] + " County has " + str(row_count) + " items!"
 	print "--------------------------------------------------"
-
-	start = 6
-	for line in data[1:]:
-		#print line
-		try:
-			caseno = line[1]
-			#print caseno
-			cell = worksheet_all.find(caseno)
-			NEW = False
-			date = worksheet_all.cell(cell.row, 1).value
-			address = worksheet_all.cell(cell.row, 3).value
-			address = address.replace(',', ' ')
-			address = address.replace('\n', ' ')
-			print str(cell.row) + "/" + str(cell.col) + ": " + str(cell.value)
-
-			requests = []
-			requests.append({
-			    'copyPaste': {
-				    "source": {
-					    "sheetId": 0, "startRowIndex": cell.row - 1, "endRowIndex": cell.row, },
-				    "destination": {
-					  	"sheetId": new_no, "startRowIndex": start - 1, "endRowIndex": start, },
-					"pasteType": "PASTE_NORMAL",
-			    }
-			})
-			batchUpdateRequest = {'requests': requests}
-			service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
-			worksheet_new.update_cell(start, 6, line[2]) #upset
-			worksheet_new.update_cell(start, 1, date + "->" + line[0]) #date
-			#worksheet_new.update_cell(start, 16, line[63]) #status
-
-		except gspread.CellNotFound as err:
-			print ("CellNotFound!")
-			NEW = True
-			if line[0] == line[9] or line[9] == 0:
-				worksheet_new.update_cell(start, 1, line[0]) #date
-			else:
-				worksheet_new.update_cell(start, 1, line[9] + '->' + line[0]) #date
-			worksheet_new.update_cell(start, 2, line[1]) #shriff
-			worksheet_new.update_cell(start, 12, line[4]) #case
-			#worksheet_new.update_cell(start, 6, line[55]) #add
-			address = line[7].replace('\n', ' ')
-			worksheet_new.update_cell(start, 6, line[2]) #upset
-			if line[3] == '':
-				worksheet_new.update_cell(start, 11, line[6]) #date
-			else:
-				worksheet_new.update_cell(start, 11, line[6] + '\nPhone: ' + line[3]) #date
-			#worksheet_new.update_cell(start, 16, line[1]) #status
-			worksheet_new.update_cell(start, 10, 'PLF: ' + line[5] + '\nDEF' + line[8]) #plantiff
-		'''
-		except ValueError as err:
-			print "value error"
-			exit(0)
-		'''
-		zipcode = address.split(" ")[-1:]
-		#print zipcode
-		if zipcode[0].isdigit():
-			#print "IS DIGIT"
-			zillow = findzillow(address, zipcode)
-		else:
-			zillow = findzillow(address, '')
-			if zillow[3] != '':
-				print "!!!Address replaced"
-				address = address + ' ' + zillow[3] 
-		print zillow
-		worksheet_new.update_cell(start, 13, zillow[1]) #zestimate
-		if zillow[2] == '' and NEW:
+	try:
+		start = 6
+		for line in data[1:]:
 			#print line
-			worksheet_new.update_cell(start, 3, address) #add	
-		elif NEW:
-			requests = []
-			requests.append({
-			    'updateCells': {
-				    "rows": { 
-				    	"values": [{
-				    		"userEnteredValue": {
-				    			"formulaValue": '=HYPERLINK("' + zillow[2] + '","' + address + '")', }, }], },
-				    "fields": "*",
-				    "start": {
-				    	"sheetId": new_no, "rowIndex": start - 1, "columnIndex": 2,},}
-			})
-			batchUpdateRequest = {'requests': requests}
-			service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
+			try:
+				caseno = line[1]
+				#print caseno
+				cell = worksheet_all.find(caseno)
+				Found = True
+				date = worksheet_all.cell(cell.row, 1).value
+				address = worksheet_all.cell(cell.row, 3).value
+				address = address.replace(',', ' ')
+				address = address.replace('\n', ' ')
+				print str(cell.row) + "/" + str(cell.col) + ": " + str(cell.value)
 
-		start=start+1
+				requests = []
+				requests.append({
+				    'copyPaste': {
+					    "source": {
+						    "sheetId": 0, "startRowIndex": cell.row - 1, "endRowIndex": cell.row, },
+					    "destination": {
+						  	"sheetId": new_no, "startRowIndex": start - 1, "endRowIndex": start, },
+						"pasteType": "PASTE_NORMAL",
+				    }
+				})
+				batchUpdateRequest = {'requests': requests}
+				service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
+				worksheet_new.update_cell(start, 6, line[2]) #upset
+				worksheet_new.update_cell(start, 1, date + "->" + line[0]) #date
+				#worksheet_new.update_cell(start, 16, line[63]) #status
+
+			except gspread.CellNotFound as err:
+				print ("CellNotFound!")
+				Found = False
+				if line[0] == line[9] or line[9] == 0:
+					worksheet_new.update_cell(start, 1, line[0]) #date
+				else:
+					worksheet_new.update_cell(start, 1, line[9] + '->' + line[0]) #date
+				worksheet_new.update_cell(start, 2, line[1]) #shriff
+				worksheet_new.update_cell(start, 12, line[4]) #case
+				#worksheet_new.update_cell(start, 6, line[55]) #add
+				address = line[7].replace('\n', ' ')
+				worksheet_new.update_cell(start, 6, line[2]) #upset
+				if line[3] == '':
+					worksheet_new.update_cell(start, 11, line[6]) #date
+				else:
+					worksheet_new.update_cell(start, 11, line[6] + '\nPhone: ' + line[3]) #date
+				#worksheet_new.update_cell(start, 16, line[1]) #status
+				worksheet_new.update_cell(start, 10, 'PLF: ' + line[5] + '\nDEF' + line[8]) #plantiff
+			'''
+			except ValueError as err:
+				print "value error"
+				exit(0)
+			'''
+			zipcode = address.split(" ")[-1:][0]
+			#print zipcode
+			if zipcode.isdigit():
+				#print "IS DIGIT"
+				zillow = findzillow(address, zipcode)
+			else:
+				zillow = findzillow(address, '')
+				if zillow[3] != '':
+					print "!!!Address replaced"
+					address = address + ' ' + zillow[3] 
+			print zillow
+			worksheet_new.update_cell(start, 13, zillow[1]) #zestimate
+			if zillow[2] == '' and Found:
+				#print line
+				worksheet_new.update_cell(start, 3, address) #add	
+			else:
+				requests = []
+				requests.append({
+				    'updateCells': {
+					    "rows": { 
+					    	"values": [{
+					    		"userEnteredValue": {
+					    			"formulaValue": '=HYPERLINK("' + zillow[2] + '","' + address + '")', }, }], },
+					    "fields": "*",
+					    "start": {
+					    	"sheetId": new_no, "rowIndex": start - 1, "columnIndex": 2,},}
+				})
+				batchUpdateRequest = {'requests': requests}
+				service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
+
+			start=start+1
+	except gspread.exceptions.HTTPError as e:
+		print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+		print "HTTP ERROR: 500"
+		print "Please run again."
+		print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+		
+		
 
 def get_gspread(SS_ADDRESS, sheetname):
 	scope_gs = ['https://spreadsheets.google.com/feeds']

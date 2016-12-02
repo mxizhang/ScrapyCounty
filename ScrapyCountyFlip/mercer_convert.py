@@ -1,7 +1,7 @@
 from openpyxl import load_workbook
 import csv
 import datetime
-wb = load_workbook(filename='sheriff_foreclosuresales_list.xlsx', read_only=True)
+wb = load_workbook(filename='sheriff_foreclosuresales_list.xlsx')
 ws = wb['Sheet1'] # ws is now an IterableWorksheet
 
 list_all = []
@@ -17,11 +17,10 @@ def next_weekday(d, weekday):  # 0 = Monday, 1=Tuesday, 2=Wednesday...
     return d + datetime.timedelta(days_ahead)
 
 we = next_weekday(datetime.datetime.today(), 2)
-WE = "%s/%s/%s" % (we.month, we.day, we.year)
+WE = we.strftime('%m/%d/%Y')
 
-for index, row in enumerate(ws.rows):
+for index, row in enumerate(l):
 	if row[0].value == "Original Sale Date:":
-		
 		ori_date = row[1].value # original sale date
 		file_no = row[3].value #file no
 		case_no = row[4].value.split(' ')[-1] #court no
@@ -33,6 +32,7 @@ for index, row in enumerate(ws.rows):
 			item[9] = ori_date # original sale date
 			item[1] = file_no #file no
 			item[4] = case_no #court no
+			print item
 		else: 
 			flag = False
 			continue
