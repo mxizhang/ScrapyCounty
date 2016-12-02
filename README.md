@@ -20,6 +20,9 @@ Check pip:
 - Scrapy <http://scrapy.org/>
 	>Install:  $ pip install scrapy
 	
+	Windows x32:
+	$ pip install pypiwin32
+	
 	!!!
 	On Windows with Error:
 	 ** make sure the development packages of libxml2 and libxslt are installed **
