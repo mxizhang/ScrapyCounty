@@ -22,7 +22,6 @@ from selenium import webdriver
 from ScrapyCountyFlip.items import Item
 import datetime
 
-
 def next_weekday(d, weekday):  # 0 = Monday, 1=Tuesday, 2=Wednesday...
     days_ahead = weekday - d.weekday()
     if days_ahead <= 0:  # Target day already happened this week
@@ -40,7 +39,7 @@ class EssexSpider(Spider):
         !!! FOR WINDOWS USER
         '''
         #self.driver = webdriver.PhantomJS(executable_path="c:/phantomjs-2.1.1-windows/bin/phantomjs.exe")
-        self.driver = webdriver.PhantomJS(executable_path="C:/phantomjs-2.1.1-windows/bin/phantomjs.exe")
+        self.driver = webdriver.PhantomJS(executable_path="C:/Users/flipp/phantomjs-2.1.1-windows/bin/phantomjs.exe")
 
     def parse(self, response):
         self.driver.get(response.url)
@@ -50,7 +49,7 @@ class EssexSpider(Spider):
         tu = next_weekday(datetime.datetime.today(), 1)
         TU = "%s/%s/%s" % (tu.month, tu.day, tu.year)
 
-        for i in range(1, 300):
+        for i in range(1, 1300):
             result = self.driver.find_element_by_xpath("//table/tbody/tr[%s]/td[1]/a" % i)
             date = self.driver.find_element_by_xpath("//table/tbody/tr[%s]/td[3]" % i).text
             if date != TU:
