@@ -64,7 +64,7 @@ def item_write(num, old_tab_name):
 
 	
 	### back up ###
-	'''
+	
 	print "Backing Up ..."
 	startrow = 6
 	caseno = worksheet_old.cell(startrow, 2).value
@@ -109,7 +109,7 @@ def item_write(num, old_tab_name):
 
 	
 	### New Sheet ###
-	'''
+	
 	try:
 		print "Creating new sheet ..."
 		requests = []
