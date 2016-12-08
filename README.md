@@ -23,7 +23,8 @@ Check pip:
 	>Install:  $ pip install scrapy
 	
 	Windows x32:
-	$ pip install pypiwin32
+	
+	>$ pip install pypiwin32
 	
 	
 	On Windows with Error:
