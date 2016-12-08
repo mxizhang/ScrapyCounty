@@ -25,14 +25,14 @@ Check pip:
 	Windows x32:
 	$ pip install pypiwin32
 	
-	!!!
+	
 	On Windows with Error:
-	 ** make sure the development packages of libxml2 and libxslt are installed **
+	 	** make sure the development packages of libxml2 and libxslt are installed **
 
 	1) download lxml & twisted wheel from here: http://www.lfd.uci.edu/~gohlke/pythonlibs/
 
 	3) pip install C:\Users\Home\Downloads\lxml- ......... .whl
-	!!!
+	
 
 - Selenium <https://pypi.python.org/pypi/selenium>
 	>Install: $ pip install selenium
@@ -43,7 +43,7 @@ Check pip:
     	Tip for Windows:
         	Change path for PhantomJS first
 		Recommand path:
-		C:/phantomjs-2.1.1-windows/bin/phantomjs.exe
+			C:/phantomjs-2.1.1-windows/bin/phantomjs.exe
 
 ### Part 2:
 - gspread (Google Spreadsheets Python API <https://github.com/burnash/gspread>)
