@@ -18,14 +18,15 @@ def download_file(download_url):
     file.close()
 
 def convert_to_xlsx():
-	files = {'f': (FILENAME_PDF, open(FILENAME_PDF, 'rb'))}
-	response = requests.post("https://pdftables.com/api?key=lhfxwj5qn8jg&format=xlsx-single", files=files) # $50 for 2500 pdfs
-	response.raise_for_status() # ensure we notice bad responses
-	with open(FILENAME_CSV, "wb") as f:
-	    f.write(response.content)
-	f.close()
+    try:
+        files = {'f': (FILENAME_PDF, open(FILENAME_PDF, 'rb'))}
+        response = requests.post("https://pdftables.com/api?key=lhfxwj5qn8jg&format=xlsx-single", files=files) # $50 for 2500 pdfs
+        response.raise_for_status() # ensure we notice bad responses
+        with open(FILENAME_CSV, "wb") as f:
+            f.write(response.content)
+        f.close()
+    except IOError as e:
+        print "Error: File does not appear to exist."
 
 def csv_read():
     subprocess.call("python h_convert.py", shell=True)
-
-#hunterdon_save()

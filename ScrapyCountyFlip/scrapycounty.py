@@ -61,6 +61,11 @@ def main():
         b = raw_input(": ")
         if b.upper() == 'Y': 
             hunterdon_save.hunterdon_save()
+        elif b.upper() == 'N':
+            hunterdon_save.convert_to_xlsx()
+            hunterdon_save.csv_read()
+        else:
+            print "NOT FOUND OPTION! "
         item_write.item_write(3, name)
         njlis.hunterdon_lis('hunterdon_lisp')
     elif num.upper() == 'S':
@@ -68,7 +73,7 @@ def main():
     elif num.upper() == 'U':
         union(4, name)
     else:
-        print "NOT FOUND! "
+        print "NOT FOUND OPTION! "
 
 def mercer(number, name):
     print "Mercer County is called."
