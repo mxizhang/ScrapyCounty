@@ -7,9 +7,11 @@ Implemented with Python 2.7 by Xi Zhang for Noah Luk at LNH Holding LLC
     - Morris
     - Essex
     - Bergen
-    - Hunterdon
-    - Middlesex
-    - Mercer comming soon
+    - Hunterdon  <http://www.co.hunterdon.nj.us/sheriff/SALES/sold.pdf>
+    - Middlesex  <http://www.middlesexcountynj.gov/Government/Departments/PSH/Pages/Foreclosures.aspx>
+    - Mercer
+    - Union
+    - Monmouth and Passaic comming soon
 
 ## Installation:
 Check pip:
@@ -40,6 +42,8 @@ Check pip:
 
     	Tip for Windows:
         	Change path for PhantomJS first
+		Recommand path:
+		C:/Python27/PhantomJS
 
 ### Part 2:
 - gspread (Google Spreadsheets Python API <https://github.com/burnash/gspread>)
