@@ -9,7 +9,7 @@ BAKE = "bakerrec.py"
 def hunterdon_save():
     download_file("http://www.co.hunterdon.nj.us/sheriff/SALES/sales.pdf")
     convert_to_xlsx()
-    csv_read()
+    bake()
 
 def download_file(download_url):
     response = urllib2.urlopen(download_url)
@@ -18,15 +18,15 @@ def download_file(download_url):
     file.close()
 
 def convert_to_xlsx():
-    try:
-        files = {'f': (FILENAME_PDF, open(FILENAME_PDF, 'rb'))}
-        response = requests.post("https://pdftables.com/api?key=lhfxwj5qn8jg&format=xlsx-single", files=files) # $50 for 2500 pdfs
-        response.raise_for_status() # ensure we notice bad responses
-        with open(FILENAME_CSV, "wb") as f:
-            f.write(response.content)
-        f.close()
-    except IOError as e:
-        print "Error: File does not appear to exist."
+	files = {'f': (FILENAME_PDF, open(FILENAME_PDF, 'rb'))}
+	response = requests.post("https://pdftables.com/api?key=f46oilu9b3vs&format=xlsx-single", files=files)
+	response.raise_for_status() # ensure we notice bad responses
+	with open(FILENAME_CSV, "wb") as f:
+	    f.write(response.content)
+	f.close()
 
-def csv_read():
-    subprocess.call("python h_convert.py", shell=True)
+def bake():
+    subprocess.call("bake " + BAKE + " " + FILENAME_CSV, shell=True)
+
+
+hunterdon_save()
