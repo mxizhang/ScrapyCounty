@@ -68,5 +68,3 @@ def csv_read():
     with open("hunterdon_items.csv", "wb") as f:
         writer = csv.writer(f)
         writer.writerows(list_all)
-
-csv_read()
