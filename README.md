@@ -43,7 +43,7 @@ Check pip:
     	Tip for Windows:
         	Change path for PhantomJS first
 		Recommand path:
-		C:/Python27/PhantomJS
+		C:/phantomjs-2.1.1-windows/bin/phantomjs.exe
 
 ### Part 2:
 - gspread (Google Spreadsheets Python API <https://github.com/burnash/gspread>)
