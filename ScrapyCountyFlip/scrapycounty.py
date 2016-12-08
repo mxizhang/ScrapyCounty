@@ -67,7 +67,7 @@ def main():
         else:
             print "NOT FOUND OPTION! "
         item_write.item_write(3, name)
-        njlis.hunterdon_lis('hunterdon_lisp')
+        njlispendens.njlis_pic(3)
     elif num.upper() == 'S':
         middlesex(6, name)
     elif num.upper() == 'U':
