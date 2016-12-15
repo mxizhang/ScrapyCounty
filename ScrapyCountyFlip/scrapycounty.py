@@ -114,6 +114,7 @@ def morris(number, name):
     njlispendens.njlis_pic(number)
 
 def bergen(number, name):
+    global START
     START = datetime.datetime.now()
     print "Bergen County is called."
     os.system("title Bergen County")
@@ -126,6 +127,7 @@ def bergen(number, name):
     njlispendens.njlis_pic(number)
 
 def essex(number, name):
+    global START
     START = datetime.datetime.now()
     print "Essex County is called."
     os.system("title Essex County")
@@ -139,6 +141,7 @@ def essex(number, name):
     njlispendens.njlis_pic(number)
 
 def middlesex(number, name):
+    global START
     START = datetime.datetime.now()
     print "MiddleSex County is called."
     os.system("title MiddleSex County")
@@ -151,6 +154,7 @@ def middlesex(number, name):
     njlispendens.njlis_pic(number)
 
 def union(number, name):
+    global START
     START = datetime.datetime.now()
     print "Union County is called."
     os.system("title Union County")
@@ -163,6 +167,7 @@ def union(number, name):
     njlispendens.njlis_pic(number)
 
 def monmouth(number, name):
+    global START
     START = datetime.datetime.now()
     print "Monmouth County is called."
     os.system("title Monmouth County")
@@ -175,6 +180,7 @@ def monmouth(number, name):
     njlispendens.njlis_pic(number)
 
 def Passaic(number, name):
+    global START
     START = datetime.datetime.now()
     print "Passaic County is called."
     os.system("title Passaic County")
