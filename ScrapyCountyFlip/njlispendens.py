@@ -16,8 +16,10 @@ hunterdon = {'name': 'Hunterdon', 'csv': 'hunterdon_items.csv'}
 union = {'name': 'Union', 'csv': 'union_items.csv'}
 mercer = {'name': 'Mercer', 'csv': 'mercer_items.csv'}
 middlesex = {'name': 'Middlesex', 'csv': 'middlesex_items.csv'}
+monmouth = {'name' : 'Monmouth', 'csv': 'monmouth_items.csv'}
+passaic = {'name' : 'Passaic', 'csv': 'passaic_items.csv'}
 
-COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex]
+COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex, monmouth, passaic]
 
 def njlis():
 	driver = webdriver.PhantomJS(executable_path="C:/phantomjs-2.1.1-windows/bin/phantomjs.exe")

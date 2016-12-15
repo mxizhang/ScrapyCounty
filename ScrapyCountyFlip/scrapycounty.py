@@ -30,9 +30,11 @@ import njlispendens
 from oauth2client.service_account import ServiceAccountCredentials
 import hunterdon_save
 import item_write
+import datetime
 '''
-COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex]
+COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex, monmouth, passaic]
 '''
+START = 0
 
 def main():
     print "-----------------------------------------"
@@ -45,6 +47,8 @@ def main():
     print "              -- Hunterdon (H)"
     print "              -- MiddleSex (S)"
     print "              -- Union (U)"
+    print "              -- Monmouth (T)"
+    print "              -- Passaic (P)"
     print "-----------------------------------------"
     num = raw_input("your choice?")
     name = raw_input('Old Tab Name?')
@@ -61,19 +65,26 @@ def main():
         b = raw_input(": ")
         if b.upper() == 'Y': 
             hunterdon_save.hunterdon_save()
-        elif b.upper() == 'N':
-            hunterdon_save.convert_to_xlsx()
-            hunterdon_save.csv_read()
-        else:
-            print "NOT FOUND OPTION! "
         item_write.item_write(3, name)
-        njlispendens.njlis_pic(3)
+        njlis.hunterdon_lis('hunterdon_lisp')
     elif num.upper() == 'S':
         middlesex(6, name)
     elif num.upper() == 'U':
         union(4, name)
+    elif num.upper() == 'T':
+        monmouth(7, name)
+    elif num.upper() == 'P':
+        passaic(8, name)
     else:
-        print "NOT FOUND OPTION! "
+        print "NOT FOUND! "
+
+    if START is not 0:
+        runtime = datetime.datetime.now() - START
+        print "-----------------------------------------------------------"
+        print "\t\t\tRunning Time is " + str(runtime.seconds) + "s."
+        print "-----------------------------------------------------------"
+    else:
+        print "No......"
 
 def mercer(number, name):
     print "Mercer County is called."
@@ -90,6 +101,8 @@ def mercer(number, name):
         njlispendens.njlis_pic(number)
 
 def morris(number, name):
+    global START
+    START = datetime.datetime.now()
     print "Morris County is called."
     os.system("title Morris County")
     try:
@@ -101,6 +114,7 @@ def morris(number, name):
     njlispendens.njlis_pic(number)
 
 def bergen(number, name):
+    START = datetime.datetime.now()
     print "Bergen County is called."
     os.system("title Bergen County")
     try:
@@ -112,6 +126,7 @@ def bergen(number, name):
     njlispendens.njlis_pic(number)
 
 def essex(number, name):
+    START = datetime.datetime.now()
     print "Essex County is called."
     os.system("title Essex County")
     try:
@@ -124,6 +139,7 @@ def essex(number, name):
     njlispendens.njlis_pic(number)
 
 def middlesex(number, name):
+    START = datetime.datetime.now()
     print "MiddleSex County is called."
     os.system("title MiddleSex County")
     try:
@@ -135,6 +151,7 @@ def middlesex(number, name):
     njlispendens.njlis_pic(number)
 
 def union(number, name):
+    START = datetime.datetime.now()
     print "Union County is called."
     os.system("title Union County")
     try:
@@ -145,6 +162,29 @@ def union(number, name):
     item_write.item_write(number, name)
     njlispendens.njlis_pic(number)
 
+def monmouth(number, name):
+    START = datetime.datetime.now()
+    print "Monmouth County is called."
+    os.system("title Monmouth County")
+    try:
+        os.remove("monmouth_items.csv")
+    except OSError:
+        pass
+    subprocess.call("scrapy crawl monmouth -o monmouth_items.csv", shell=True)
+    item_write.item_write(number, name)
+    njlispendens.njlis_pic(number)
+
+def Passaic(number, name):
+    START = datetime.datetime.now()
+    print "Passaic County is called."
+    os.system("title Passaic County")
+    try:
+        os.remove("passaic_items.csv")
+    except OSError:
+        pass
+    subprocess.call("scrapy crawl passaic -o passaic_items.csv", shell=True)
+    item_write.item_write(number, name)
+    njlispendens.njlis_pic(number)
 
 if __name__ == "__main__":
     main()

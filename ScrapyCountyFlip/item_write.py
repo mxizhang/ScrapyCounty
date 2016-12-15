@@ -18,6 +18,8 @@ MIS_ADDS = 'https://docs.google.com/spreadsheets/d/1W-6ngztdGnx-N2-YA8v7dtOgw39O
 UNI_ADDS = 'https://docs.google.com/spreadsheets/d/1koChyqS8UbXCoWV662YY8zVXT57lR4snW6j5aMrU1Rw/edit#gid=0'
 #TEST_ADD = 'https://docs.google.com/spreadsheets/d/1em7oEKzfA3qbNcHdn8d892y0rJvxjF5UnUY7XK6Yyik/edit#gid=0'
 MEC_ADDS = 'https://docs.google.com/spreadsheets/d/1c2AiIahiFZFA37FCa5SJOcsWDXJQxa3qwmHw0rlB7eY/edit#gid=0'
+MON_ADDS = 'https://docs.google.com/spreadsheets/d/1RHMczsQ6mpajEZT0gYcJqCXz3FR5SSZepxXZnGTXmy4/edit#gid=0'
+PSC_ADDS = 'https://docs.google.com/spreadsheets/d/1zlClRl91bAcBtG1zA5NlyOHqUoV1wYHfnzyl_mof1qw/edit#gid=0'
 
 KEY = 'flipnj-4f3fbac03d23.json'
 
@@ -28,13 +30,15 @@ hunterdon = {'name': 'Hunterdon', 'csv': 'hunterdon_items.csv', 'add': HTD_ADDS}
 union = {'name': 'Union', 'csv': 'union_items.csv', 'add': UNI_ADDS}
 mercer = {'name': 'Mercer', 'csv': 'mercer_items.csv', 'add': MEC_ADDS}
 middlesex = {'name': 'Middlesex', 'csv': 'middlesex_items.csv', 'add': MIS_ADDS}
+monmouth = {'name' : 'Monmouth', 'csv': 'monmouth_items.csv', 'add': MON_ADDS}
+passaic = {'name' : 'Passaic', 'csv': 'passaic_items.csv', 'add': PSC_ADDS}
 #test = {'name': 'Test', 'csv': 'essex_items.csv', 'add': TEST_ADD}
 '''
 result = service.spreadsheets().values().get(
     spreadsheetId=spreadsheetID, range='C6', valueRenderOption='FORMULA').execute()
 print result['values'][0][0]
 '''
-COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex]
+COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex, monmouth, passaic]
 '''
 0             1       2      3        4    5   6    7      8    9
 sale_date,sheriff_no,upset,att_ph,case_no,plf, att,address,dfd,schd_data
@@ -55,8 +59,6 @@ def item_write(num, old_tab_name):
 	worksheet_old_id = find_sheetId(spreadsheetID, old_tab_name)
 	worksheet_all_name = find_sheetname(spreadsheetID, 0)
 	worksheet_all = get_gspread(SS_ADDRESS, worksheet_all_name)
-
-	NEW = True
 
 	if worksheet_old_id is None or worksheet_all_name is None:
 		print "No Such Tab Name"
@@ -176,7 +178,8 @@ def item_write(num, old_tab_name):
 				batchUpdateRequest = {'requests': requests}
 				service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
 				worksheet_new.update_cell(start, 6, line[2]) #upset
-				worksheet_new.update_cell(start, 1, date + "->" + line[0]) #date
+				if date != line[0]:
+					worksheet_new.update_cell(start, 1, date + "->" + line[0]) #date
 				#worksheet_new.update_cell(start, 16, line[63]) #status
 
 			except gspread.CellNotFound as err:
@@ -212,7 +215,7 @@ def item_write(num, old_tab_name):
 				if zillow[3] != '':
 					print "!!!Address replaced"
 					address = address + ' ' + zillow[3] 
-			print zillow
+			#print zillow
 			worksheet_new.update_cell(start, 13, zillow[1]) #zestimate
 			if zillow[2] == '' and Found:
 				#print line
