@@ -30,8 +30,8 @@ def next_weekday(d, weekday):  # 0 = Monday, 1=Tuesday, 2=Wednesday...
     return d + datetime.timedelta(days_ahead)
 
 
-class MorrisSpider(Spider):
-    name = "morris"
+class PassaicSpider(Spider):
+    name = "passaic"
     allowed_domains = ["civilview.com"]
     start_urls = ["http://salesweb.civilview.com/"]
 
@@ -44,16 +44,16 @@ class MorrisSpider(Spider):
 
     def parse(self, response):
         self.driver.get(response.url)
-        el = self.driver.find_element_by_xpath('//a[@href="/Sales/SalesSearch?countyId=9"]')
+        el = self.driver.find_element_by_xpath('//a[@href="/Sales/SalesSearch?countyId=17"]')
         el.click()
 
-        th = next_weekday(datetime.datetime.today(), 3)
-        TH = "%s/%s/%s" % (th.month, th.day, th.year)
+        tu = next_weekday(datetime.datetime.today(), 1)
+        TU = "%s/%s/%s" % (tu.month, tu.day, tu.year)
 
-        for i in range(1, 100):
+        for i in range(1, 1300):
             result = self.driver.find_element_by_xpath("//table/tbody/tr[%s]/td[1]/a" % i)
             date = self.driver.find_element_by_xpath("//table/tbody/tr[%s]/td[3]" % i).text
-            if date != TH:
+            if date != TU:
                 continue
             else:
                 result.click()
