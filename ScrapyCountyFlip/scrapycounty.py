@@ -61,6 +61,7 @@ def main():
     elif num.upper() == 'B':
         bergen(2, name)
     elif num.upper() == 'H':
+        os.system("title Hunterdon County")
         print "Download .pdf ? (Y/N) "
         b = raw_input(": ")
         if b.upper() == 'Y': 
@@ -92,11 +93,11 @@ def mercer(number, name):
     print "!!! Step 1: Download sheriff_foreclosuresales_list.pdf from http://nj.gov/counties/mercer/pdfs/sheriff_foreclosuresales_list.pdf"
     print "!!! Step 2: Open http://www.pdftoexcel.com/"
     print "!!! Step 3: Upload sheriff_foreclosuresales_list.pdf and download .xlsx"
-    print "!!! Step 4: Save as sheriff_foreclosuresales_list.xlsx in ScrapyCounty_windows folder"
+    print "!!! Step 4: Save as sheriff_foreclosuresales_list.xlsx in ScrapyCountyFlip folder"
     print "Please type Y to continue"
     num = raw_input("")
     if num.upper() == 'Y':
-        subprocess.call("python mercer_convert.py", shell=True)
+        #subprocess.call("python mercer_convert.py", shell=True)
         item_write.item_write(number, name)
         njlispendens.njlis_pic(number)
 
@@ -136,9 +137,8 @@ def essex(number, name):
     except OSError:
         pass
     subprocess.call("scrapy crawl essex -o essex_items.csv", shell=True)
-    
     item_write.item_write(number, name)
-    njlispendens.njlis_pic(number)
+    #njlispendens.njlis_pic(number)
 
 def middlesex(number, name):
     global START
@@ -179,7 +179,7 @@ def monmouth(number, name):
     item_write.item_write(number, name)
     njlispendens.njlis_pic(number)
 
-def Passaic(number, name):
+def passaic(number, name):
     global START
     START = datetime.datetime.now()
     print "Passaic County is called."
