@@ -30,6 +30,7 @@ import njlispendens
 from oauth2client.service_account import ServiceAccountCredentials
 import hunterdon_save
 import item_write
+import new_write
 import datetime
 '''
 COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex, monmouth, passaic]
@@ -61,13 +62,7 @@ def main():
     elif num.upper() == 'B':
         bergen(2, name)
     elif num.upper() == 'H':
-        os.system("title Hunterdon County")
-        print "Download .pdf ? (Y/N) "
-        b = raw_input(": ")
-        if b.upper() == 'Y': 
-            hunterdon_save.hunterdon_save()
-        item_write.item_write(3, name)
-        njlis.hunterdon_lis('hunterdon_lisp')
+        hunterdon(3, name)
     elif num.upper() == 'S':
         middlesex(6, name)
     elif num.upper() == 'U':
@@ -87,17 +82,25 @@ def main():
     else:
         print "No......"
 
+def hunterdon(number, name):
+    print "Download .pdf ? (Y/N) "
+    b = raw_input(": ")
+    if b.upper() == 'Y':
+        hunterdon_save.hunterdon_save()
+    item_write.item_write(number, name)
+
+
 def mercer(number, name):
     print "Mercer County is called."
     os.system("title Mercer County")
     print "!!! Step 1: Download sheriff_foreclosuresales_list.pdf from http://nj.gov/counties/mercer/pdfs/sheriff_foreclosuresales_list.pdf"
     print "!!! Step 2: Open http://www.pdftoexcel.com/"
     print "!!! Step 3: Upload sheriff_foreclosuresales_list.pdf and download .xlsx"
-    print "!!! Step 4: Save as sheriff_foreclosuresales_list.xlsx in ScrapyCountyFlip folder"
+    print "!!! Step 4: Save as sheriff_foreclosuresales_list.xlsx in ScrapyCounty_windows folder"
     print "Please type Y to continue"
     num = raw_input("")
     if num.upper() == 'Y':
-        #subprocess.call("python mercer_convert.py", shell=True)
+        subprocess.call("python mercer_convert.py", shell=True)
         item_write.item_write(number, name)
         njlispendens.njlis_pic(number)
 
@@ -105,25 +108,14 @@ def morris(number, name):
     global START
     START = datetime.datetime.now()
     print "Morris County is called."
-    os.system("title Morris County")
-    try:
-        os.remove("morris_items.csv")
-    except OSError:
-        pass
-    subprocess.call("scrapy crawl morris -o morris_items.csv", shell=True)
     item_write.item_write(number, name)
-    njlispendens.njlis_pic(number)
+    #new_write.new_write(number, name)
+    #njlispendens.njlis_pic(number)
 
 def bergen(number, name):
     global START
     START = datetime.datetime.now()
     print "Bergen County is called."
-    os.system("title Bergen County")
-    try:
-        os.remove("bergen_items.csv")
-    except OSError:
-        pass
-    subprocess.call("scrapy crawl bergen -o bergen_items.csv", shell=True)
     item_write.item_write(number, name)
     njlispendens.njlis_pic(number)
 
@@ -131,51 +123,30 @@ def essex(number, name):
     global START
     START = datetime.datetime.now()
     print "Essex County is called."
-    os.system("title Essex County")
-    try:
-        os.remove("essex_items.csv")
-    except OSError:
-        pass
-    subprocess.call("scrapy crawl essex -o essex_items.csv", shell=True)
     item_write.item_write(number, name)
-    #njlispendens.njlis_pic(number)
+    #new_write.write_continue(number)
+    njlispendens.njlis_pic(number)
 
 def middlesex(number, name):
     global START
     START = datetime.datetime.now()
     print "MiddleSex County is called."
     os.system("title MiddleSex County")
-    try:
-        os.remove("middlesex_items.csv")
-    except OSError:
-        pass
-    subprocess.call("scrapy crawl middlesex -o middlesex_items.csv", shell=True)
     item_write.item_write(number, name)
-    njlispendens.njlis_pic(number)
+    #new_write.new_write(number, name)
+    #njlispendens.njlis_pic(number)
 
 def union(number, name):
     global START
     START = datetime.datetime.now()
     print "Union County is called."
     os.system("title Union County")
-    try:
-        os.remove("union_items.csv")
-    except OSError:
-        pass
-    subprocess.call("scrapy crawl union -o union_items.csv", shell=True)
     item_write.item_write(number, name)
-    njlispendens.njlis_pic(number)
 
 def monmouth(number, name):
     global START
     START = datetime.datetime.now()
     print "Monmouth County is called."
-    os.system("title Monmouth County")
-    try:
-        os.remove("monmouth_items.csv")
-    except OSError:
-        pass
-    subprocess.call("scrapy crawl monmouth -o monmouth_items.csv", shell=True)
     item_write.item_write(number, name)
     njlispendens.njlis_pic(number)
 
@@ -183,12 +154,6 @@ def passaic(number, name):
     global START
     START = datetime.datetime.now()
     print "Passaic County is called."
-    os.system("title Passaic County")
-    try:
-        os.remove("passaic_items.csv")
-    except OSError:
-        pass
-    subprocess.call("scrapy crawl passaic -o passaic_items.csv", shell=True)
     item_write.item_write(number, name)
     njlispendens.njlis_pic(number)
 

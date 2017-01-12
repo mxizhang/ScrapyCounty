@@ -1,7 +1,10 @@
 from Tkinter import *
 import scrapycounty
 import sys
-import subprocess
+import item_write
+import mercer_convert
+import hunterdon_save
+from gspread import exceptions
 
 morris = {'name': 'Morris', 'csv': 'morris_items.csv', 'date': 'Thr'}
 essex = {'name': 'Essex', 'csv': 'essex_items.csv', 'date': 'Tue'}
@@ -38,6 +41,7 @@ class simpleapp_tk(Tk):
 
         sys.stdout = self
         self.resizable(True,False)
+        self.grid_columnconfigure(0, weight=1)
 
     def selectscrpy(self):
     	self.button = Button(self, text="Run", fg="red", command=self.runscrapy)
@@ -58,31 +62,53 @@ class simpleapp_tk(Tk):
 
 
     def sel(self):
-		self.text.delete('1.0', "end")
-		option = var.get()
-		selection = "You selected the " + str(COUNTY[option]['name']) + " county.\n"
-		self.text.insert(INSERT, selection)
+        self.text.delete('1.0', "end")
+        option = var.get()
+        selection = "You selected the " + str(COUNTY[option]['name']) + " county.\n"
+        self.text.insert(INSERT, selection)
 
-		if option == 3:
-			self.text.insert(INSERT, "Hunterdon county is using .pdf\n")
-		elif option == 5:
-			self.text.insert(INSERT, "Mercer county is using .pdf\nPlease follow: \n")
-			self.text.insert(INSERT, "Step 1: Download sheriff_foreclosuresales_list.pdf from http://nj.gov/counties/mercer/pdfs/sheriff_foreclosuresales_list.pdf\n")
-			self.text.insert(INSERT, "Step 2: Open http://www.pdftoexcel.com/\n")
-			self.text.insert(INSERT, "Step 3: Upload sheriff_foreclosuresales_list.pdf and download .xlsx\n")
-			self.text.insert(INSERT, "Step 4: Save as sheriff_foreclosuresales_list.xlsx in ScrapyCounty_windows folder\n")
+        if option == 3:
+            self.text.insert(INSERT, "Hunterdon county is using .pdf\n")
+        elif option == 5:
+            self.text.insert(INSERT, "Mercer county is using .pdf\nPlease follow: \n")
+            self.text.insert(INSERT, "Step 1: Download sheriff_foreclosuresales_list.pdf from http://nj.gov/counties/mercer/pdfs/sheriff_foreclosuresales_list.pdf\n")
+            self.text.insert(INSERT, "Step 2: Open http://www.pdftoexcel.com/\n")
+            self.text.insert(INSERT, "Step 3: Upload sheriff_foreclosuresales_list.pdf and download .xlsx\n")
+            self.text.insert(INSERT, "Step 4: Save as sheriff_foreclosuresales_list.xlsx in ScrapyCounty_windows folder\n")
+
 
     def write(self, txt):
         self.text.insert(END, str(txt))
 
     def runscrapy(self):
         option = var.get()
-        sheetname = self.entryVariable1.get()
+        name = self.entryVariable1.get()
 
-        if option == 3:
-            scrapycounty.hunterdon(option, sheetname)
+        if option == 0:
+            scrapycounty.morris(0, name)
         elif option == 5:
-            subprocess.call("python mercer_convert.py", shell=True)
+            if self.entryVariable2.get().upper() == 'Y':
+                hunterdon_save.hunterdon_save()
+            item_write.item_write(5, name)
+        elif option == 1:
+            scrapycounty.essex(1, name)
+        elif option == 2:
+            scrapycounty.bergen(2, name)
+        elif option == 3:
+            if self.entryVariable2.get().upper() == 'Y':
+                mercer_convert()
+                item_write.item_write(3, name)
+        elif option == 6:
+            scrapycounty.middlesex(6, name)
+        elif option == 4:
+            scrapycounty.union(4, name)
+        elif option == 7:
+            scrapycounty.monmouth(7, name)
+        elif option == 8:
+            scrapycounty.passaic(8, name)
+        else:
+            print "NOT FOUND! "
+
 
 if __name__ == "__main__":
     app = simpleapp_tk(None)

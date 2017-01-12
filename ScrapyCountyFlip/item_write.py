@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 # -*- author: mxiz -*-
 import time
-import gspread
+from gspread import *
 import csv
 from zillow_function import findzillow
 import httplib2
 import random
+import os
+import subprocess
+import tkMessageBox
 from apiclient import discovery
 from googleapiclient.errors import HttpError
 from oauth2client.service_account import ServiceAccountCredentials
@@ -30,8 +33,8 @@ hunterdon = {'name': 'Hunterdon', 'csv': 'hunterdon_items.csv', 'add': HTD_ADDS}
 union = {'name': 'Union', 'csv': 'union_items.csv', 'add': UNI_ADDS}
 mercer = {'name': 'Mercer', 'csv': 'mercer_items.csv', 'add': MEC_ADDS}
 middlesex = {'name': 'Middlesex', 'csv': 'middlesex_items.csv', 'add': MIS_ADDS}
-monmouth = {'name' : 'Monmouth', 'csv': 'monmouth_items.csv', 'add': MON_ADDS}
-passaic = {'name' : 'Passaic', 'csv': 'passaic_items.csv', 'add': PSC_ADDS}
+monmouth = {'name': 'Monmouth', 'csv': 'monmouth_items.csv', 'add': MON_ADDS}
+passaic = {'name': 'Passaic', 'csv': 'passaic_items.csv', 'add': PSC_ADDS}
 #test = {'name': 'Test', 'csv': 'essex_items.csv', 'add': TEST_ADD}
 '''
 result = service.spreadsheets().values().get(
@@ -45,6 +48,7 @@ sale_date,sheriff_no,upset,att_ph,case_no,plf, att,address,dfd,schd_data
 1      2            3           6          7         10       11        12       13
 date, SHERIFF'S #, ADDRESS, Judegment,	NEW UPSET, PLF/DEF, ATTY/FIRM, DOCKET#, Zillow
 '''
+
 def item_write(num, old_tab_name):
 
 	# Get credentials
@@ -55,22 +59,27 @@ def item_write(num, old_tab_name):
 	spreadsheetID = SS_ADDRESS.split('/')[5]
 
 	service = get_google_service()
-	worksheet_old = get_gspread(SS_ADDRESS, old_tab_name)
-	worksheet_old_id = find_sheetId(spreadsheetID, old_tab_name)
-	worksheet_all_name = find_sheetname(spreadsheetID, 0)
-	worksheet_all = get_gspread(SS_ADDRESS, worksheet_all_name)
+	try: 
+		worksheet_old = get_gspread(SS_ADDRESS, old_tab_name)
+		worksheet_old_id = find_sheetId(spreadsheetID, old_tab_name)
+		worksheet_all_name = find_sheetname(spreadsheetID, 0)
+		worksheet_all = get_gspread(SS_ADDRESS, worksheet_all_name)
+	except exceptions.WorksheetNotFound as err: 
+		print "Please enter a valid tab name in sheet."
+		tkMessageBox.showinfo("Error: Invalid Tab Name <%s>" % old_tab_name, "Please enter a valid tab name in sheet.")
+		quit()
 
-	if worksheet_old_id is None or worksheet_all_name is None:
-		print "No Such Tab Name"
-		exit(0)
+	### New Items ###
+	scrapy(num, county)
 
 	
 	### back up ###
+	
 	print "Backing Up ..."
 	startrow = 6
 	caseno = worksheet_old.cell(startrow, 2).value
+	requests = []
 	while caseno is not "":
-		requests = []
 		requests.append({
 		    'insertDimension': {
 		        "range": {"sheetId": 0, "dimension": 1, "startIndex": 5, "endIndex": 6},
@@ -80,7 +89,7 @@ def item_write(num, old_tab_name):
 
 		try:
 			cell = worksheet_all.find(caseno)
-			print caseno + "at: " + cell.value + "is deleted."
+			print "%s at %s is deleted." % (case_no, startrow)
 			requests.append({
 			    'deleteDimension': {
 				    "range": {
@@ -88,7 +97,7 @@ def item_write(num, old_tab_name):
 				    },
 			    }
 			})
-		except gspread.CellNotFound as err:
+		except CellNotFound as err:
 			print "Not Found in Sheet_All!"
 
 		requests.append({
@@ -102,14 +111,13 @@ def item_write(num, old_tab_name):
 				"pasteType": "PASTE_NORMAL",
 		    }
 		})
-		batchUpdateRequest = {'requests': requests}
-		service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
 		startrow = startrow + 1
 		caseno = worksheet_old.cell(startrow, 2).value
-		#print str(startrow) + " not null: " + str(casen0
-	'''
+	batchUpdateRequest = {'requests': requests}
+	service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
+	
 	### New Sheet ###
-	'''
+	
 	try:
 		print "Creating new sheet ..."
 		requests = []
@@ -135,7 +143,9 @@ def item_write(num, old_tab_name):
 		worksheet_new = get_gspread(SS_ADDRESS, worksheet_new_name)
 	except HttpError as err:
 		print "Google Error. Already Exists"
-		exit(0)
+		print "Please enter a valid tab name in sheet."
+		tkMessageBox.showinfo("Error: Existed Tab Name", "A existed Tab name.\nPlease delete today's tab name or run it another day.")
+		quit()
 	'''
 	### Read Data ###
 	'''
@@ -179,8 +189,8 @@ def item_write(num, old_tab_name):
 				worksheet_new.update_cell(start, 1, date + "->" + line[0]) #date
 			#worksheet_new.update_cell(start, 16, line[63]) #status
 
-		except gspread.CellNotFound as err:
-			print ("CellNotFound!")
+		except CellNotFound as err:
+			print ("New Item!")
 			Found = False
 			if line[0] == line[9] or line[9] == 0:
 				worksheet_new.update_cell(start, 1, line[0]) #date
@@ -210,7 +220,7 @@ def item_write(num, old_tab_name):
 		else:
 			zillow = findzillow(address, '')
 			if zillow[3] != '':
-				print "!!!Address replaced"
+				#print "!!!Address replaced"
 				address = address + ' ' + zillow[3] 
 		#print zillow
 		worksheet_new.update_cell(start, 13, zillow[1]) #zestimate
@@ -233,20 +243,24 @@ def item_write(num, old_tab_name):
 			service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
 
 		start=start+1
-	'''
-	#except gspread.exceptions.HTTPError as e:
-		#print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-		print "HTTP ERROR: 500"
-		print "Please run again."
-		print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-	'''
-		
-		
+		print "%s out of %s is finished." % (start-6, row_count)
+
+
+def scrapy(num, county):
+	countyname = county['name']
+	filename = county['csv']
+	try:
+		os.remove(filename)
+	except OSError:
+		pass
+	print "%s county is starting scraping..." % countyname
+	subprocess.call("scrapy crawl %s -o %s" % (countyname.lower(), filename), shell=True)
+	print "%s county done scraping" % countyname
 
 def get_gspread(SS_ADDRESS, sheetname):
 	scope_gs = ['https://spreadsheets.google.com/feeds']
 	credentials_gs = ServiceAccountCredentials.from_json_keyfile_name(KEY, scope_gs)
-	gc = gspread.authorize(credentials_gs)
+	gc = authorize(credentials_gs)
 	sh = gc.open_by_url(SS_ADDRESS)
 	worksheet = sh.worksheet(sheetname)
 	return worksheet
