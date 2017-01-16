@@ -89,7 +89,7 @@ def item_write(num, old_tab_name):
 
 		try:
 			cell = worksheet_all.find(caseno)
-			print "%s at %s is deleted." % (case_no, startrow)
+			print "%s at %s is deleted." % (caseno, startrow)
 			requests.append({
 			    'deleteDimension': {
 				    "range": {
