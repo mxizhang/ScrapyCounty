@@ -128,8 +128,7 @@ def write_continue(num):
 	worksheet_new_name = time.strftime("%m/%d/%Y")
 	worksheet_new = get_gspread(SS_ADDRESS, worksheet_new_name)
 	#new_no = find_sheetId(SS_ADDRESS, worksheet_new_name)
-	new_no = '53532217'
-
+	new_no = '5187536'
 	'''
 	### Read Data ###
 	'''
