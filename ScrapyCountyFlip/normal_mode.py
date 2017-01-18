@@ -19,7 +19,6 @@ BGN_ADDS = 'https://docs.google.com/spreadsheets/d/1aZBeaENA0xjxqpmKYNDrjIM4c_zy
 HTD_ADDS = 'https://docs.google.com/spreadsheets/d/1kjiHt_daqvIueDw6qD7wk75mTFo0_ubRUFCnHNn4J8E/edit#gid=0'
 MIS_ADDS = 'https://docs.google.com/spreadsheets/d/1W-6ngztdGnx-N2-YA8v7dtOgw39OYi9cauYtMa4t-lw/edit#gid=0'
 UNI_ADDS = 'https://docs.google.com/spreadsheets/d/1koChyqS8UbXCoWV662YY8zVXT57lR4snW6j5aMrU1Rw/edit#gid=0'
-#TEST_ADD = 'https://docs.google.com/spreadsheets/d/1em7oEKzfA3qbNcHdn8d892y0rJvxjF5UnUY7XK6Yyik/edit#gid=0'
 MEC_ADDS = 'https://docs.google.com/spreadsheets/d/1c2AiIahiFZFA37FCa5SJOcsWDXJQxa3qwmHw0rlB7eY/edit#gid=0'
 MON_ADDS = 'https://docs.google.com/spreadsheets/d/1RHMczsQ6mpajEZT0gYcJqCXz3FR5SSZepxXZnGTXmy4/edit#gid=0'
 PSC_ADDS = 'https://docs.google.com/spreadsheets/d/1zlClRl91bAcBtG1zA5NlyOHqUoV1wYHfnzyl_mof1qw/edit#gid=0'
@@ -35,7 +34,6 @@ mercer = {'name': 'Mercer', 'csv': 'mercer_items.csv', 'add': MEC_ADDS}
 middlesex = {'name': 'Middlesex', 'csv': 'middlesex_items.csv', 'add': MIS_ADDS}
 monmouth = {'name': 'Monmouth', 'csv': 'monmouth_items.csv', 'add': MON_ADDS}
 passaic = {'name': 'Passaic', 'csv': 'passaic_items.csv', 'add': PSC_ADDS}
-#test = {'name': 'Test', 'csv': 'essex_items.csv', 'add': TEST_ADD}
 '''
 result = service.spreadsheets().values().get(
     spreadsheetId=spreadsheetID, range='C6', valueRenderOption='FORMULA').execute()
@@ -49,39 +47,56 @@ sale_date,sheriff_no,upset,att_ph,case_no,plf, att,address,dfd,schd_data
 date, SHERIFF'S #, ADDRESS, Judegment,	NEW UPSET, PLF/DEF, ATTY/FIRM, DOCKET#, Zillow
 '''
 
-def item_write(num, old_tab_name):
-
+def match(num, tab_name):
 	# Get credentials
 	# Get Google Sheets official API
+	global county_info, service
 	county = COUNTY[num]
-	filename = county['csv']
 	SS_ADDRESS = county['add']
 	spreadsheetID = SS_ADDRESS.split('/')[5]
-
 	service = get_google_service()
 	try: 
-		worksheet_old = get_gspread(SS_ADDRESS, old_tab_name)
-		worksheet_old_id = find_sheetId(spreadsheetID, old_tab_name)
+		worksheet_old = get_gspread(SS_ADDRESS, tab_name)
+		worksheet_old_id = find_sheetId(spreadsheetID, tab_name)
 		worksheet_all_name = find_sheetname(spreadsheetID, 0)
 		worksheet_all = get_gspread(SS_ADDRESS, worksheet_all_name)
+		worksheet_old_info = {'name': tab_name, 'id': worksheet_old_id, 'gspread': worksheet_old}
+		worksheet_all_info = {'name': worksheet_all_name, 'id': 0, 'gspread': worksheet_all}
+		county_info = {'county': county, 'worksheet_old_info': worksheet_old_info, 
+						'worksheet_all_info': worksheet_all_info }
+		return county_info
 	except exceptions.WorksheetNotFound as err: 
 		print "Please enter a valid tab name in sheet."
-		tkMessageBox.showinfo("Error: Invalid Tab Name <%s>" % old_tab_name, "Please enter a valid tab name in sheet.")
+		tkMessageBox.showinfo("Error: Invalid Tab Name <%s>" % tab_name, "Please enter a valid tab name in sheet.")
 		quit()
-  	### New Items ###
+
+def normal_mode(num, tab_name):
+	county_info = match(num, tab_name)
+	spreadsheetID = county_info['county']['add'].split('/')[5]
+	
+	### scrapy New Items ###
 	if num == 3 or num == 5:
 		pass
 	else:
-		scrapy(num, county)
+		scrapy(num, county_info['county'])
+	### New Sheet ###
+	worksheet_new_name = new_sheet(spreadsheetID)
 
-	
-	### back up ###
-	
+	### Read Write ###
+	read_and_write(county_info, worksheet_new_name)
+
+	### Back Up ###
+	back_up(county_info)
+
+def back_up(county_info):
+	worksheet_old = county_info['worksheet_old_info']['gspread']
+	worksheet_all = county_info['worksheet_all_info']['gspread']
+	spreadsheetID = county_info['county']['add'].split('/')[5]
 	print "Backing Up ..."
 	startrow = 6
 	caseno = worksheet_old.cell(startrow, 2).value
-	requests = []
 	while caseno is not "":
+		requests = []
 		requests.append({
 		    'insertDimension': {
 		        "range": {"sheetId": 0, "dimension": 1, "startIndex": 5, "endIndex": 6},
@@ -105,7 +120,7 @@ def item_write(num, old_tab_name):
 		requests.append({
 		    'copyPaste': {
 			    "source": {
-				    "sheetId": worksheet_old_id, "startRowIndex": startrow - 1, "endRowIndex": startrow,
+				    "sheetId": county_info['worksheet_old_info']['id'], "startRowIndex": startrow - 1, "endRowIndex": startrow,
 			    },
 			    "destination": {
 			    	"sheetId": 0, "startRowIndex": 5, "endRowIndex": 6,
@@ -115,42 +130,16 @@ def item_write(num, old_tab_name):
 		})
 		startrow = startrow + 1
 		caseno = worksheet_old.cell(startrow, 2).value
-	batchUpdateRequest = {'requests': requests}
-	service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
-	
-	### New Sheet ###
-	
-	try:
-		print "Creating new sheet ..."
-		requests = []
-		new_no = random.randrange(1, 99999999)
-		worksheet_new_name = time.strftime("%m/%d/%Y")
-		requests.append({
-		    'addSheet': {
-			    "properties": { "sheetId": new_no, "title": worksheet_new_name,
-			}, }
-		})
-		# Copy Title
-		requests.append({
-		    'copyPaste': {
-			    "source": {
-				    "sheetId": 0, "startRowIndex": 0, "endRowIndex": 4,},
-			    "destination": {
-			    	"sheetId": new_no, "startRowIndex": 0, "endRowIndex": 4,},
-				"pasteType": "PASTE_NORMAL", }
-		})
 		batchUpdateRequest = {'requests': requests}
 		service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
+	tkMessageBox.showinfo("Done!", "Back-up process is done.\n You can exit anytime.")
 
-		worksheet_new = get_gspread(SS_ADDRESS, worksheet_new_name)
-	except HttpError as err:
-		print "Google Error. Already Exists"
-		print "Please enter a valid tab name in sheet."
-		tkMessageBox.showinfo("Error: Existed Tab Name", "A existed Tab name.\nPlease delete today's tab name or run it another day.")
-		quit()
-	'''
-	### Read Data ###
-	'''
+def read_and_write(county_info, worksheet_new_name, start=6):
+	county = county_info['county']
+	filename = county['csv']
+	SS_ADDRESS = county['add']
+	spreadsheetID = SS_ADDRESS.split('/')[5]
+
 	print "Reading Data ..."
 	with open(filename, "rb") as csvfile:
 		filereader = csv.reader(csvfile)
@@ -158,27 +147,30 @@ def item_write(num, old_tab_name):
 		row_count = len(data)
 
 	print "--------------------------------------------------"
-	print county['name'] + " County has " + str(row_count) + " items!"
+	print county['name'] + " County has " + str(row_count-1) + " items!"
 	print "--------------------------------------------------"
-	start = 6
-	for line in data[1:]:
-		#print line
+
+	worksheet_new = get_gspread(SS_ADDRESS, worksheet_new_name)
+	worksheet_old = county_info['worksheet_old_info']['gspread']
+	worksheet_all = county_info['worksheet_all_info']['gspread']
+	for line in data[start-5:]:
+		caseno = line[1]
+		new_no = find_sheetId(spreadsheetID, worksheet_new_name)
+
 		try:
-			caseno = line[1]
-			#print caseno
-			cell = worksheet_all.find(caseno)
+			cell = worksheet_old.find(caseno)
 			Found = True
-			date = worksheet_all.cell(cell.row, 1).value
-			address = worksheet_all.cell(cell.row, 3).value
+			date = worksheet_old.cell(cell.row, 1).value
+			address = worksheet_old.cell(cell.row, 3).value
 			address = address.replace(',', ' ')
 			address = address.replace('\n', ' ')
-			print str(cell.row) + "/" + str(cell.col) + ": " + str(cell.value)
+			print "Found in old " + str(cell.row) + "/" + str(cell.col) + ": " + str(cell.value)
 
 			requests = []
 			requests.append({
 			    'copyPaste': {
 				    "source": {
-					    "sheetId": 0, "startRowIndex": cell.row - 1, "endRowIndex": cell.row, },
+					    "sheetId": county_info['worksheet_old_info']['id'], "startRowIndex": cell.row - 1, "endRowIndex": cell.row, },
 				    "destination": {
 					  	"sheetId": new_no, "startRowIndex": start - 1, "endRowIndex": start, },
 					"pasteType": "PASTE_NORMAL",
@@ -189,31 +181,51 @@ def item_write(num, old_tab_name):
 			worksheet_new.update_cell(start, 6, line[2]) #upset
 			if date != line[0]:
 				worksheet_new.update_cell(start, 1, date + "->" + line[0]) #date
-			#worksheet_new.update_cell(start, 16, line[63]) #status
-
+		
 		except CellNotFound as err:
-			print ("New Item!")
-			Found = False
-			if line[0] == line[9] or line[9] == 0:
-				worksheet_new.update_cell(start, 1, line[0]) #date
-			else:
-				worksheet_new.update_cell(start, 1, line[9] + '->' + line[0]) #date
-			worksheet_new.update_cell(start, 2, line[1]) #shriff
-			worksheet_new.update_cell(start, 12, line[4]) #case
-			#worksheet_new.update_cell(start, 6, line[55]) #add
-			address = line[7].replace('\n', ' ')
-			worksheet_new.update_cell(start, 6, line[2]) #upset
-			if line[3] == '':
-				worksheet_new.update_cell(start, 11, line[6]) #date
-			else:
-				worksheet_new.update_cell(start, 11, line[6] + '\nPhone: ' + line[3]) #date
-			#worksheet_new.update_cell(start, 16, line[1]) #status
-			worksheet_new.update_cell(start, 10, 'PLF: ' + line[5] + '\nDEF' + line[8]) #plantiff
-		'''
-		except ValueError as err:
-			print "value error"
-			exit(0)
-		'''
+			try:
+				cell = worksheet_all.find(caseno)
+				Found = True
+				date = worksheet_all.cell(cell.row, 1).value
+				address = worksheet_all.cell(cell.row, 3).value
+				address = address.replace(',', ' ')
+				address = address.replace('\n', ' ')
+				print "Found in all " + str(cell.row) + "/" + str(cell.col) + ": " + str(cell.value)
+
+				requests = []
+				requests.append({
+				    'copyPaste': {
+					    "source": {
+						    "sheetId": 0, "startRowIndex": cell.row - 1, "endRowIndex": cell.row, },
+					    "destination": {
+						  	"sheetId": new_no, "startRowIndex": start - 1, "endRowIndex": start, },
+						"pasteType": "PASTE_NORMAL",
+				    }
+				})
+				batchUpdateRequest = {'requests': requests}
+				service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
+				worksheet_new.update_cell(start, 6, line[2]) #upset
+				if date != line[0]:
+					worksheet_new.update_cell(start, 1, date + "->" + line[0]) #date
+			except CellNotFound as err:
+				print ("New Item!")
+				Found = False
+				if line[0] == line[9] or line[9] == 0:
+					worksheet_new.update_cell(start, 1, line[0]) #date
+				else:
+					worksheet_new.update_cell(start, 1, line[9] + '->' + line[0]) #date
+				worksheet_new.update_cell(start, 2, line[1]) #shriff
+				worksheet_new.update_cell(start, 12, line[4]) #case
+				#worksheet_new.update_cell(start, 6, line[55]) #add
+				address = line[7].replace('\n', ' ')
+				worksheet_new.update_cell(start, 6, line[2]) #upset
+				if line[3] == '':
+					worksheet_new.update_cell(start, 11, line[6]) #att
+				else:
+					worksheet_new.update_cell(start, 11, line[6] + '\nPhone: ' + line[3]) #date
+				#worksheet_new.update_cell(start, 16, line[1]) #status
+				worksheet_new.update_cell(start, 10, 'PLF: ' + line[5] + '\nDEF' + line[8]) #plantiff
+
 		zipcode = address.split(" ")[-1:][0]
 		#print zipcode
 		if zipcode.isdigit():
@@ -245,8 +257,38 @@ def item_write(num, old_tab_name):
 			service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
 
 		start=start+1
-		print "%s out of %s is finished." % (start-6, row_count)
+		print "%s out of %s is finished." % (start-6, row_count-1)
+	tkMessageBox.showinfo("Congrats", "Finished! \nPlease wait until back-up process done.")
 
+def new_sheet(spreadsheetID):
+	try:
+		print "Creating new sheet ..."
+		requests = []
+		new_no = random.randrange(1, 99999999)
+		worksheet_new_name = time.strftime("%m/%d/%Y")
+		requests.append({
+		    'addSheet': {
+			    "properties": { "sheetId": new_no, "title": worksheet_new_name,
+			}, }
+		})
+		# Copy Title
+		requests.append({
+		    'copyPaste': {
+			    "source": {
+				    "sheetId": 0, "startRowIndex": 0, "endRowIndex": 4,},
+			    "destination": {
+			    	"sheetId": new_no, "startRowIndex": 0, "endRowIndex": 4,},
+				"pasteType": "PASTE_NORMAL", }
+		})
+		batchUpdateRequest = {'requests': requests}
+		service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
+		return worksheet_new_name
+
+	except HttpError as err:
+		print "Google Error. Already Exists"
+		print "Please enter a valid tab name in sheet."
+		tkMessageBox.showinfo("Error: Existed Tab Name", "A existed Tab name.\nPlease delete today's tab name or run it another day.")
+		quit()
 
 def scrapy(num, county):
 	countyname = county['name']
@@ -290,3 +332,4 @@ def find_sheetname(spreadsheetID, sheetId):
 		if item['properties']['sheetId'] == sheetId:
 			return item['properties']['title']
 	return None
+

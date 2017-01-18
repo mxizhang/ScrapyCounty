@@ -32,6 +32,7 @@ import hunterdon_save
 import item_write
 import new_write
 import datetime
+import normal_mode
 '''
 COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex, monmouth, passaic]
 '''
@@ -116,8 +117,7 @@ def bergen(number, name):
     global START
     START = datetime.datetime.now()
     print "Bergen County is called."
-    item_write.item_write(number, name)
-    njlispendens.njlis_pic(number)
+    normal_mode.normal_mode(number, name)
 
 def essex(number, name):
     global START
