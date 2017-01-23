@@ -61,5 +61,11 @@ def manual_mode(num, old_tab_name, worksheet_new_name, startrow):
 		tkMessageBox.showerror("Error!", "Network Problem.\nPlease run it again.")
 		quit()
 
+	tkMessageBox.showinfo("Congrats", "Finished! \nPlease wait until back-up process done.")
+	
+	### Back Up ###
+	back_up(county_info)
 
-#manual_mode(2, '12/30/2016', '01/16/2017', 24)
+#manual_mode(2, '01/19/2017', '01/22/2017', 154)
+#Tk().withdraw()
+#tkMessageBox.showinfo("Congrats", "New Sheet! \nPlease wait for reading & writing data.")  

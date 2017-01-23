@@ -93,7 +93,7 @@ def hunterdon(number, name):
 
 def mercer(number, name):
     print "Mercer County is called."
-    os.system("title Mercer County")
+    #os.system("title Mercer County")
     print "!!! Step 1: Download sheriff_foreclosuresales_list.pdf from http://nj.gov/counties/mercer/pdfs/sheriff_foreclosuresales_list.pdf"
     print "!!! Step 2: Open http://www.pdftoexcel.com/"
     print "!!! Step 3: Upload sheriff_foreclosuresales_list.pdf and download .xlsx"
@@ -102,14 +102,14 @@ def mercer(number, name):
     num = raw_input("")
     if num.upper() == 'Y':
         subprocess.call("python mercer_convert.py", shell=True)
-        item_write.item_write(number, name)
+        normal_mode.normal_mode(number, name)
         njlispendens.njlis_pic(number)
 
 def morris(number, name):
     global START
     START = datetime.datetime.now()
     print "Morris County is called."
-    item_write.item_write(number, name)
+    normal_mode.normal_mode(number, name)
     #new_write.new_write(number, name)
     #njlispendens.njlis_pic(number)
 
@@ -123,16 +123,16 @@ def essex(number, name):
     global START
     START = datetime.datetime.now()
     print "Essex County is called."
-    item_write.item_write(number, name)
+    normal_mode.normal_mode(number, name)
     #new_write.write_continue(number)
-    njlispendens.njlis_pic(number)
+    #njlispendens.njlis_pic(number)
 
 def middlesex(number, name):
     global START
     START = datetime.datetime.now()
     print "MiddleSex County is called."
     os.system("title MiddleSex County")
-    item_write.item_write(number, name)
+    normal_mode.normal_mode(number, name)
     #new_write.new_write(number, name)
     #njlispendens.njlis_pic(number)
 
@@ -140,22 +140,22 @@ def union(number, name):
     global START
     START = datetime.datetime.now()
     print "Union County is called."
-    os.system("title Union County")
-    item_write.item_write(number, name)
+    #os.system("title Union County")
+    normal_mode.normal_mode(number, name)
 
 def monmouth(number, name):
     global START
     START = datetime.datetime.now()
     print "Monmouth County is called."
-    item_write.item_write(number, name)
-    njlispendens.njlis_pic(number)
+    normal_mode.normal_mode(number, name)
+    #njlispendens.njlis_pic(number)
 
 def passaic(number, name):
     global START
     START = datetime.datetime.now()
     print "Passaic County is called."
-    item_write.item_write(number, name)
-    njlispendens.njlis_pic(number)
+    normal_mode.normal_mode(number, name)
+    #njlispendens.njlis_pic(number)
 
 if __name__ == "__main__":
-    main()
+    main()  

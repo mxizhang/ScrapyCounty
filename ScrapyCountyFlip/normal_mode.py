@@ -8,6 +8,7 @@ import httplib2
 import random
 import os
 import subprocess
+from Tkinter import *
 import tkMessageBox
 from apiclient import discovery
 from googleapiclient.errors import HttpError
@@ -46,7 +47,10 @@ sale_date,sheriff_no,upset,att_ph,case_no,plf, att,address,dfd,schd_data
 1      2            3           6          7         10       11        12       13
 date, SHERIFF'S #, ADDRESS, Judegment,	NEW UPSET, PLF/DEF, ATTY/FIRM, DOCKET#, Zillow
 '''
-
+'''
+### Match spreadsheet tab function:
+	return county_info with 'old' tab and 'all' tab
+'''
 def match(num, tab_name):
 	# Get credentials
 	# Get Google Sheets official API
@@ -70,6 +74,11 @@ def match(num, tab_name):
 		tkMessageBox.showinfo("Error: Invalid Tab Name <%s>" % tab_name, "Please enter a valid tab name in sheet.")
 		quit()
 
+
+'''
+### Normal Mode:
+	
+'''
 def normal_mode(num, tab_name):
 	county_info = match(num, tab_name)
 	spreadsheetID = county_info['county']['add'].split('/')[5]
@@ -81,12 +90,23 @@ def normal_mode(num, tab_name):
 		scrapy(num, county_info['county'])
 	### New Sheet ###
 	worksheet_new_name = new_sheet(spreadsheetID)
-
+	#tkMessageBox.showinfo("Congrats", "New Sheet! \nPlease wait for reading & writing data.")
 	### Read Write ###
 	read_and_write(county_info, worksheet_new_name)
+    print "-----------------------------------------------------------"
+    print "\t\t\tNew Sheet is ready! Please wait for backup process "
+    print "-----------------------------------------------------------"
+	#print "Finished Read & Write"
+	#tkMessageBox.showinfo("Congrats", "Finished! \nPlease wait until back-up process done.")
 
+	#print "Finished Read & Write"
+	#tkMessageBox.showinfo("Congrats", "Finished! \nPlease wait until back-up process done.")
+	
 	### Back Up ###
 	back_up(county_info)
+	print "-----------------------------------------------------------"
+    print "\t\t\tAll Done! Exit anytime."
+    print "-----------------------------------------------------------"
 
 def back_up(county_info):
 	worksheet_old = county_info['worksheet_old_info']['gspread']
@@ -258,7 +278,6 @@ def read_and_write(county_info, worksheet_new_name, start=6):
 
 		start=start+1
 		print "%s out of %s is finished." % (start-6, row_count-1)
-	tkMessageBox.showinfo("Congrats", "Finished! \nPlease wait until back-up process done.")
 
 def new_sheet(spreadsheetID):
 	try:
@@ -333,3 +352,4 @@ def find_sheetname(spreadsheetID, sheetId):
 			return item['properties']['title']
 	return None
 
+#normal_mode(0, '01/19/2017')

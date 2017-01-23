@@ -2,8 +2,9 @@
 from Tkinter import *
 import time
 import threading
-import scrapycounty
+import hunterdon_save
 from manual_mode import *
+import normal_mode
 from ScrolledText import ScrolledText
 
 morris = {'name': 'Morris', 'csv': 'morris_items.csv', 'date': 'Thr'}
@@ -83,14 +84,18 @@ class simpleapp_tk(Tk):
         self.entry2 = Entry(self, textvariable=string_variable)
         self.entry2.grid(column=2, row=9, sticky='EW')
         self.entry3 = Entry(self, textvariable=new_name_variable)
+        self.entry3.configure(state='disabled')
         self.entry3.grid(column=3, row=8, sticky='EW')
 
         sys.stdout = self
-        self.resizable(True, False)
+        self.resizable(False, False)
 
+    # Scroll Text
     def write(self, txt):
         text.insert(END, str(txt))
+        text.see(END)
 
+    # SELECT radiobuttons callback
     def selection_acive(self):
     	self.run.configure(state='disabled')
         text.delete('1.0', "end")
@@ -104,6 +109,7 @@ class simpleapp_tk(Tk):
             text.insert(INSERT, "Step 3: Upload sheriff_foreclosuresales_list.pdf and download .xlsx\n")
             text.insert(INSERT, "Step 4: Save as sheriff_foreclosuresales_list.xlsx in ScrapyCounty_windows folder\n")
 
+    # Select button callback
     def selectscrpy(self):
     	self.run.configure(state='normal', command=run_scrapy)
 
@@ -119,6 +125,7 @@ class simpleapp_tk(Tk):
             else:
             	self.entry2.configure(state='disabled')
 
+    # Mode Switch radiobutton callback
     def switch_mode(self):
         mode_option = mode.get()
         # manual mode
@@ -138,6 +145,7 @@ class simpleapp_tk(Tk):
             self.buttons[3].configure(state='normal')
             self.buttons[5].configure(state='normal')
 
+# Run backend scrapy
 def run_scrapy():
     mode_option = mode.get()
     if mode_option == 0:
@@ -149,13 +157,30 @@ def run_scrapy():
         th.setDaemon(True)
         th.start()
 
-
 def normal():
     time.sleep(0.5)
-    county = countyname.get()
-    tab_name = old_name_vairable.get()
-    scrapycounty.bergen(county, tab_name)
+    number = countyname.get()
+    sel = string_variable.get()
+    name = old_name_vairable.get()
+    if number == 3:
+        if sel == "Y":
+            hunterdon_save.hunterdon_save()
+        else:
+            print "No new file will be downloaded. Make sure sale.pdf is the newest."
+        normal_mode.normal_mode(number, name)
+    elif number == 5:
+        if sel == "Y":
+            hunterdon_save.hunterdon_save()
+            normal_mode.normal_mode(number, name)
+        else:
+            print "Please read above."
+    else:
+        print "normal"
+        normal_mode.normal_mode(number, name)
+    #scrapycounty.bergen(county, tab_name)
     #print "normal mode run"
+
+
 
 def manual():
     time.sleep(0.5)
@@ -166,7 +191,6 @@ def manual():
     print "%s: %s and %s start with %s" % (county, old_tab_name, new_tab_name, startrow)
     manual_mode(county, old_tab_name, new_tab_name, int(startrow))
     #print "manual mode run"
-
 
 if __name__ == "__main__":
     app = simpleapp_tk(None)
