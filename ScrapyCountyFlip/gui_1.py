@@ -3,8 +3,10 @@ from Tkinter import *
 import time
 import threading
 import hunterdon_save
+import mercer_convert
 from manual_mode import *
 import normal_mode
+import datetime
 from ScrolledText import ScrolledText
 
 morris = {'name': 'Morris', 'csv': 'morris_items.csv', 'date': 'Thr'}
@@ -16,8 +18,9 @@ mercer = {'name': 'Mercer', 'csv': 'mercer_items.csv', 'date': 'Wed'}
 middlesex = {'name': 'Middlesex', 'csv': 'middlesex_items.csv', 'date': 'Wed'}
 monmouth = {'name': 'Monmouth', 'csv': 'monmouth_items.csv', 'date': 'Mon'}
 passaic = {'name': 'Passaic', 'csv': 'passaic_items.csv', 'date': 'Tue'}
+hudson = {'name': 'Hudson', 'csv': 'hudson_items.csv', 'date': 'Thr'}
 
-COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex, monmouth, passaic]
+COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex, monmouth, passaic, hudson]
 LENGTH = len(COUNTY)
 UNIONFRONT = ('Arial', 12, 'bold')
 class simpleapp_tk(Tk):
@@ -45,8 +48,8 @@ class simpleapp_tk(Tk):
 
     	# text message
 		global text
-		text = ScrolledText(self, height=15, width=75)
-		text.grid(column=1, row=1, rowspan=7, columnspan=3, sticky='W')
+		text = ScrolledText(self, height=15, width=70)
+		text.grid(column=1, row=1, rowspan=8, columnspan=3, sticky='W')
 
     	# Select County -- global countyname[0-8]
 		global countyname
@@ -61,7 +64,7 @@ class simpleapp_tk(Tk):
             self.buttons.append(b)
 
 		# Button1 -- select
-        self.sel = Button(self, text="Select", width=15, 
+        self.sel = Button(self, text="Select", width=15, fg='red',
         				  font=UNIONFRONT,command=self.selectscrpy)
         self.sel.grid(column=0, row=LENGTH+2, columnspan=2, sticky='W')
 
@@ -75,17 +78,17 @@ class simpleapp_tk(Tk):
         new_name_variable = StringVar()
         string_variable = StringVar()
 
-        self.lable1 = Label(self, text=u"Input tab name: ", font=UNIONFRONT, anchor=W)
-        self.lable1.grid(column=1, row=8, sticky='EW')
-        self.lable2 = Label(self, text=u"Download PDF? (Y/N)", font=UNIONFRONT, anchor=W)
-        self.lable2.grid(column=1, row=9, sticky='EW')
+        self.lable1 = Label(self, text=u"Most Recent Tab Name: ", font=UNIONFRONT, anchor=W)
+        self.lable1.grid(column=1, row=9, sticky='EW')
+        self.lable2 = Label(self, text="", font=UNIONFRONT, anchor=W)
+        self.lable2.grid(column=1, row=10, sticky='EW')
         self.entry1 = Entry(self, textvariable=old_name_vairable)
-        self.entry1.grid(column=2, row=8, sticky='EW')
+        self.entry1.grid(column=2, row=9, sticky='EW')
         self.entry2 = Entry(self, textvariable=string_variable)
-        self.entry2.grid(column=2, row=9, sticky='EW')
+        self.entry2.grid(column=2, row=10, sticky='EW')
         self.entry3 = Entry(self, textvariable=new_name_variable)
         self.entry3.configure(state='disabled')
-        self.entry3.grid(column=3, row=8, sticky='EW')
+        self.entry3.grid(column=3, row=9, sticky='EW')
 
         sys.stdout = self
         self.resizable(False, False)
@@ -102,36 +105,44 @@ class simpleapp_tk(Tk):
         option = countyname.get()
         if option == 3:
             text.insert(INSERT, "Hunterdon county is using .pdf\n")
+            text.insert(INSERT, "Check pdf file has new data before run.\n")
         elif option == 5:
-            text.insert(INSERT, "Mercer county is using .pdf\nPlease follow: \n")
-            text.insert(INSERT, "Step 1: Download sheriff_foreclosuresales_list.pdf from http://nj.gov/counties/mercer/pdfs/sheriff_foreclosuresales_list.pdf\n")
+            text.insert(INSERT, "Mercer county is using .pdf\n")
+            text.insert(INSERT, "Check pdf file has new data before run.\n")
+            text.insert(INSERT, "Please follow: \nStep 1: Download sheriff_foreclosuresales_list.pdf from http://nj.gov/counties/mercer/pdfs/sheriff_foreclosuresales_list.pdf\n")
             text.insert(INSERT, "Step 2: Open http://www.pdftoexcel.com/\n")
             text.insert(INSERT, "Step 3: Upload sheriff_foreclosuresales_list.pdf and download .xlsx\n")
-            text.insert(INSERT, "Step 4: Save as sheriff_foreclosuresales_list.xlsx in ScrapyCounty_windows folder\n")
+            text.insert(INSERT, "Step 4: Save as sheriff_foreclosuresales_list.xlsx in ScrapyCountyFlip folder\n")
 
     # Select button callback
     def selectscrpy(self):
-    	self.run.configure(state='normal', command=run_scrapy)
+    	self.run.configure(state='normal', command=self.run_scrapy)
+        for b in self.buttons:
+            b.configure(state='disabled')
 
     	option = countyname.get()
+        self.buttons[option].configure(state='normal')
+        self.title('Scrapy County -- ' + str(COUNTY[option]['name']))
         selection = "You've selected the " + str(COUNTY[option]['name']) + " county.\n"
         text.insert(INSERT, selection)
 
     	option = countyname.get()
         mode_option = mode.get()
         if mode_option == 0:
-            if option == 5 or option == 3:
+            if option == 3:
             	self.entry2.configure(state='normal')
+                self.lable2.configure(text='Download PDF? (Y/N)')
             else:
             	self.entry2.configure(state='disabled')
+                self.lable2.configure(text='')
 
     # Mode Switch radiobutton callback
     def switch_mode(self):
         mode_option = mode.get()
         # manual mode
         if mode_option == 1:
-            old_name_vairable.set("Old tab name here: ")
-            new_name_variable.set("New tab name here: ")
+            old_name_vairable.set("Last run tab name here: ")
+            new_name_variable.set("Current tab name here: ")
             self.entry3.configure(state='normal')
             self.lable2.configure(text=u'Input start row: ')
             self.buttons[3].configure(state='disabled')
@@ -146,16 +157,23 @@ class simpleapp_tk(Tk):
             self.buttons[5].configure(state='normal')
 
 # Run backend scrapy
-def run_scrapy():
-    mode_option = mode.get()
-    if mode_option == 0:
-    	th = threading.Thread(target=normal)
-    	th.setDaemon(True)
-    	th.start()
-    elif mode_option == 1:
-        th = threading.Thread(target=manual)
-        th.setDaemon(True)
-        th.start()
+    def run_scrapy(self):
+        today = datetime.datetime.today()
+        D = "%s/%s/%s" % (today.month, today.day, today.year)
+        print "Taday's date is %s \n" % D
+        if old_name_vairable.get() is D:
+            print "Not today's date: %s .\n Please enter the tab name for last run." % D
+        else:
+            self.run.configure(text='Running...', state='disabled')
+            mode_option = mode.get()
+            if mode_option == 0:
+                th = threading.Thread(target=normal)
+                th.setDaemon(True)
+                th.start()
+            elif mode_option == 1:
+                th = threading.Thread(target=manual)
+                th.setDaemon(True)
+                th.start()
 
 def normal():
     time.sleep(0.5)
@@ -169,13 +187,9 @@ def normal():
             print "No new file will be downloaded. Make sure sale.pdf is the newest."
         normal_mode.normal_mode(number, name)
     elif number == 5:
-        if sel == "Y":
-            hunterdon_save.hunterdon_save()
-            normal_mode.normal_mode(number, name)
-        else:
-            print "Please read above."
+        mercer_convert.main()
+        normal_mode.normal_mode(number, name)
     else:
-        print "normal"
         normal_mode.normal_mode(number, name)
     #scrapycounty.bergen(county, tab_name)
     #print "normal mode run"

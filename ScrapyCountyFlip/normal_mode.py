@@ -10,6 +10,7 @@ import os
 import subprocess
 from Tkinter import *
 import tkMessageBox
+import njlispendens
 from apiclient import discovery
 from googleapiclient.errors import HttpError
 from oauth2client.service_account import ServiceAccountCredentials
@@ -23,7 +24,7 @@ UNI_ADDS = 'https://docs.google.com/spreadsheets/d/1koChyqS8UbXCoWV662YY8zVXT57l
 MEC_ADDS = 'https://docs.google.com/spreadsheets/d/1c2AiIahiFZFA37FCa5SJOcsWDXJQxa3qwmHw0rlB7eY/edit#gid=0'
 MON_ADDS = 'https://docs.google.com/spreadsheets/d/1RHMczsQ6mpajEZT0gYcJqCXz3FR5SSZepxXZnGTXmy4/edit#gid=0'
 PSC_ADDS = 'https://docs.google.com/spreadsheets/d/1zlClRl91bAcBtG1zA5NlyOHqUoV1wYHfnzyl_mof1qw/edit#gid=0'
-
+HDS_ADDS = 'https://docs.google.com/spreadsheets/d/1QEZFHVAlLpKRsUOB0Gfai7C9h7fcasWIuuuUVAwDIm0/edit#gid=0'
 KEY = 'flipnj-4f3fbac03d23.json'
 
 morris = {'name': 'Morris', 'csv': 'morris_items.csv', 'add': MRS_ADDS}
@@ -35,12 +36,13 @@ mercer = {'name': 'Mercer', 'csv': 'mercer_items.csv', 'add': MEC_ADDS}
 middlesex = {'name': 'Middlesex', 'csv': 'middlesex_items.csv', 'add': MIS_ADDS}
 monmouth = {'name': 'Monmouth', 'csv': 'monmouth_items.csv', 'add': MON_ADDS}
 passaic = {'name': 'Passaic', 'csv': 'passaic_items.csv', 'add': PSC_ADDS}
+hudson = {'name': 'Hudson', 'csv': 'hudson_items.csv', 'add': HDS_ADDS}
 '''
 result = service.spreadsheets().values().get(
     spreadsheetId=spreadsheetID, range='C6', valueRenderOption='FORMULA').execute()
 print result['values'][0][0]
 '''
-COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex, monmouth, passaic]
+COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex, monmouth, passaic, hudson]
 '''
 0             1       2      3        4    5   6    7      8    9
 sale_date,sheriff_no,upset,att_ph,case_no,plf, att,address,dfd,schd_data
@@ -70,8 +72,8 @@ def match(num, tab_name):
 						'worksheet_all_info': worksheet_all_info }
 		return county_info
 	except exceptions.WorksheetNotFound as err: 
-		print "Please enter a valid tab name in sheet."
-		tkMessageBox.showinfo("Error: Invalid Tab Name <%s>" % tab_name, "Please enter a valid tab name in sheet.")
+		print "Please enter a valid tab name in sheet.\nAnd make sure it's not today's date."
+		#tkMessageBox.showinfo("Error: Invalid Tab Name <%s>" % tab_name, "Please enter a valid tab name in sheet.")
 		quit()
 
 
@@ -93,9 +95,9 @@ def normal_mode(num, tab_name):
 	#tkMessageBox.showinfo("Congrats", "New Sheet! \nPlease wait for reading & writing data.")
 	### Read Write ###
 	read_and_write(county_info, worksheet_new_name)
-    print "-----------------------------------------------------------"
-    print "\t\t\tNew Sheet is ready! Please wait for backup process "
-    print "-----------------------------------------------------------"
+	print "-----------------------------------------------------------"
+	print "\t\tNew Sheet is ready! Please wait for backup process "
+	print "-----------------------------------------------------------"
 	#print "Finished Read & Write"
 	#tkMessageBox.showinfo("Congrats", "Finished! \nPlease wait until back-up process done.")
 
@@ -104,9 +106,16 @@ def normal_mode(num, tab_name):
 	
 	### Back Up ###
 	back_up(county_info)
+
 	print "-----------------------------------------------------------"
-    print "\t\t\tAll Done! Exit anytime."
-    print "-----------------------------------------------------------"
+	print "\t\tBackup Done! Wait for NJlispendens"
+	print "-----------------------------------------------------------"
+
+	### NJLispenden ###
+	njlispendens.njlis_pic(num)
+	print "-----------------------------------------------------------"
+	print "\t\tAll Done! Exit anytime."
+	print "-----------------------------------------------------------"
 
 def back_up(county_info):
 	worksheet_old = county_info['worksheet_old_info']['gspread']
@@ -152,7 +161,7 @@ def back_up(county_info):
 		caseno = worksheet_old.cell(startrow, 2).value
 		batchUpdateRequest = {'requests': requests}
 		service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
-	tkMessageBox.showinfo("Done!", "Back-up process is done.\n You can exit anytime.")
+	#tkMessageBox.showinfo("Done!", "Back-up process is done.\n You can exit anytime.")
 
 def read_and_write(county_info, worksheet_new_name, start=6):
 	county = county_info['county']
@@ -306,7 +315,7 @@ def new_sheet(spreadsheetID):
 	except HttpError as err:
 		print "Google Error. Already Exists"
 		print "Please enter a valid tab name in sheet."
-		tkMessageBox.showinfo("Error: Existed Tab Name", "A existed Tab name.\nPlease delete today's tab name or run it another day.")
+		#tkMessageBox.showinfo("Error: Existed Tab Name", "A existed Tab name.\nPlease delete today's tab name or run it another day.")
 		quit()
 
 def scrapy(num, county):

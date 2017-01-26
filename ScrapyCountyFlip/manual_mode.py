@@ -4,6 +4,7 @@ import os.path
 from gspread import *
 from zillow_function import findzillow
 import tkMessageBox
+import njlispendens
 from apiclient import discovery
 from googleapiclient.errors import HttpError
 from oauth2client.service_account import ServiceAccountCredentials
@@ -50,7 +51,9 @@ def manual_mode(num, old_tab_name, worksheet_new_name, startrow):
 	if os.path.isfile(filename):
 		pass
 	else:
-		tkMessageBox.showerror("Error!", "Not found .csv file.\nPlease run in normal mode first.")
+		print "Error!!!!!"
+		print "Not found .csv file.\nPlease run in normal mode first."
+		#tkMessageBox.showerror("Error!", "Not found .csv file.\nPlease run in normal mode first.")
 
 	### write manully ###
 	try:
@@ -58,14 +61,27 @@ def manual_mode(num, old_tab_name, worksheet_new_name, startrow):
 		print county['name'] + " County starts from NO. " + str(startrow-5) + " item!"
 		read_and_write(county_info, worksheet_new_name, startrow)
 	except:
-		tkMessageBox.showerror("Error!", "Network Problem.\nPlease run it again.")
+		print "--------------------------------------------------"
+		print "\t\tNetwork problme. please try again."
+		print "--------------------------------------------------"
+		#tkMessageBox.showerror("Error!", "Network Problem.\nPlease run it again.")
 		quit()
 
-	tkMessageBox.showinfo("Congrats", "Finished! \nPlease wait until back-up process done.")
+	#tkMessageBox.showinfo("Congrats", "Finished! \nPlease wait until back-up process done.")
 	
 	### Back Up ###
 	back_up(county_info)
 
-#manual_mode(2, '01/19/2017', '01/22/2017', 154)
+	print "-----------------------------------------------------------"
+	print "\t\tBackup Done! Wait for NJlispendens"
+	print "-----------------------------------------------------------"
+
+	### NJLispenden ###
+	njlispendens.njlis_pic(num)
+	print "-----------------------------------------------------------"
+	print "\t\tAll Done! Exit anytime."
+	print "-----------------------------------------------------------"
+
+#manual_mode(5, '01/16/2017', '01/23/2017', 37)
 #Tk().withdraw()
 #tkMessageBox.showinfo("Congrats", "New Sheet! \nPlease wait for reading & writing data.")  
