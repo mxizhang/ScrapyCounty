@@ -145,7 +145,7 @@ def write_continue(num):
 	print "--------------------------------------------------"
 	print county['name'] + " County has " + str(row_count) + " items!"
 	print "--------------------------------------------------"
-	start = 102
+	start = 127
 	for line in data[117:]:
 		#print line
 		try:

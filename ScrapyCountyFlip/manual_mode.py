@@ -71,17 +71,14 @@ def manual_mode(num, old_tab_name, worksheet_new_name, startrow):
 	
 	### Back Up ###
 	back_up(county_info)
-
+	'''
 	print "-----------------------------------------------------------"
 	print "\t\tBackup Done! Wait for NJlispendens"
 	print "-----------------------------------------------------------"
-
+	
 	### NJLispenden ###
 	njlispendens.njlis_pic(num)
+	'''
 	print "-----------------------------------------------------------"
 	print "\t\tAll Done! Exit anytime."
 	print "-----------------------------------------------------------"
-
-#manual_mode(5, '01/16/2017', '01/23/2017', 37)
-#Tk().withdraw()
-#tkMessageBox.showinfo("Congrats", "New Sheet! \nPlease wait for reading & writing data.")  

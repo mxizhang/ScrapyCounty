@@ -106,16 +106,18 @@ def normal_mode(num, tab_name):
 	
 	### Back Up ###
 	back_up(county_info)
-
+	'''
 	print "-----------------------------------------------------------"
 	print "\t\tBackup Done! Wait for NJlispendens"
 	print "-----------------------------------------------------------"
-
+	
 	### NJLispenden ###
 	njlispendens.njlis_pic(num)
+	'''
 	print "-----------------------------------------------------------"
 	print "\t\tAll Done! Exit anytime."
 	print "-----------------------------------------------------------"
+	
 
 def back_up(county_info):
 	worksheet_old = county_info['worksheet_old_info']['gspread']
@@ -214,7 +216,7 @@ def read_and_write(county_info, worksheet_new_name, start=6):
 		except CellNotFound as err:
 			try:
 				cell = worksheet_all.find(caseno)
-				Found = True
+				Found = False
 				date = worksheet_all.cell(cell.row, 1).value
 				address = worksheet_all.cell(cell.row, 3).value
 				address = address.replace(',', ' ')
@@ -262,12 +264,12 @@ def read_and_write(county_info, worksheet_new_name, start=6):
 			zillow = findzillow(address, zipcode)
 		else:
 			zillow = findzillow(address, '')
-			if zillow[3] != '':
+			if zillow[3] is not '':
 				#print "!!!Address replaced"
 				address = address + ' ' + zillow[3] 
 		#print zillow
 		worksheet_new.update_cell(start, 13, zillow[1]) #zestimate
-		if zillow[2] == '' and Found:
+		if zillow[2] == '' and not Found:
 			#print line
 			worksheet_new.update_cell(start, 3, address) #add	
 		else:
@@ -325,7 +327,7 @@ def scrapy(num, county):
 		os.remove(filename)
 	except OSError:
 		pass
-	print "%s county is starting scraping..." % countyname
+	print "%s county is scraping..." % countyname
 	subprocess.call("scrapy crawl %s -o %s" % (countyname.lower(), filename), shell=True)
 	print "%s county done scraping" % countyname
 

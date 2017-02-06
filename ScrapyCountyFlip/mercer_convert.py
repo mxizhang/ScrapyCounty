@@ -33,7 +33,7 @@ def main():
 				item[9] = ori_date # original sale date
 				item[1] = file_no #file no
 				item[4] = case_no #court no
-				print item
+				#print item
 			else: 
 				flag = False
 				continue
@@ -70,12 +70,14 @@ def main():
 			if flag:
 				print item
 				list_all.append(item)
+				item = [0 for x in range(10)]
 
 		elif row[3].value == "Location:":
 			item[7] = row[4].value
 			if flag:
 				print item
 				list_all.append(item)
+				item = [0 for x in range(10)]
 
 	'''
 	count = 0
