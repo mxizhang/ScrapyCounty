@@ -39,15 +39,15 @@ class HudsonSpider(Spider):
         '''
         !!! FOR WINDOWS USER
         '''
-        #self.driver = webdriver.PhantomJS(executable_path="c:/phantomjs-2.1.1-windows/bin/phantomjs.exe")
-        self.driver = webdriver.PhantomJS()
+        self.driver = webdriver.PhantomJS(executable_path="c:/phantomjs-2.1.1-windows/bin/phantomjs.exe")
+        #self.driver = webdriver.PhantomJS()
 
     def parse(self, response):
         self.driver.get(response.url)
         el = self.driver.find_element_by_xpath('//a[@href="/Sales/SalesSearch?countyId=10"]')
         el.click()
 
-        th = next_weekday(datetime.datetime.today(), 3)
+        th = next_weekday(datetime.datetime.today(), 4)
         TH = "%s/%s/%s" % (th.month, th.day, th.year)
 
         for i in range(1, 1000):
