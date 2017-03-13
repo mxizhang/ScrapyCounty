@@ -82,3 +82,5 @@ def manual_mode(num, old_tab_name, worksheet_new_name, startrow):
 	print "-----------------------------------------------------------"
 	print "\t\tAll Done! Exit anytime."
 	print "-----------------------------------------------------------"
+
+#manual_mode(5, '02/18/2017', '02/27/2017', 48)

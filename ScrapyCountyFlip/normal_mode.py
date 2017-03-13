@@ -216,7 +216,7 @@ def read_and_write(county_info, worksheet_new_name, start=6):
 		except CellNotFound as err:
 			try:
 				cell = worksheet_all.find(caseno)
-				Found = False
+				Found = True
 				date = worksheet_all.cell(cell.row, 1).value
 				address = worksheet_all.cell(cell.row, 3).value
 				address = address.replace(',', ' ')
@@ -269,7 +269,9 @@ def read_and_write(county_info, worksheet_new_name, start=6):
 				address = address + ' ' + zillow[3] 
 		#print zillow
 		worksheet_new.update_cell(start, 13, zillow[1]) #zestimate
-		if zillow[2] == '' and not Found:
+		if zillow[2] == '' and Found:
+			pass
+		elif zillow[2] == '' and not Found:
 			#print line
 			worksheet_new.update_cell(start, 3, address) #add	
 		else:
@@ -362,5 +364,9 @@ def find_sheetname(spreadsheetID, sheetId):
 		if item['properties']['sheetId'] == sheetId:
 			return item['properties']['title']
 	return None
-
+'''
 #normal_mode(0, '01/19/2017')
+c_info = match(1, '02/20/2017')
+back_up(c_info)
+print '???????? finished'
+'''

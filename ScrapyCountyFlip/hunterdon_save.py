@@ -52,13 +52,17 @@ def csv_read():
             else:
                 item[2] = l[index+1][3].value 
                 num = 3
-            item[7] = l[index+1][num+1].value #address
+            #print l[index+1][num+1].value
+            if l[index+1][num+2].value == None:
+                item[7] = str(l[index+1][num+1].value) #address
+            else:
+                item[7] = str(l[index+1][num+1].value) + l[index+1][num+2].value #address
             #print 'case#: '+ item[1] + '/asset: ' + l[index+1][num].value  
         elif row[num+1].value == 'City':
             city = l[index+1][num+1].value.split(' ')
             for index in range(len(city)):
                 if city[index] == 'OF':
-                    #print city[index+1:]
+                    #print item[7]
                     #print " ".join(city[index+1:])
                     item[7] = item[7] + " " + " ".join(city[index+1:])
         elif row[0].value == 'Plaintiff':
@@ -75,4 +79,3 @@ def csv_read():
     with open("hunterdon_items.csv", "wb") as f:
         writer = csv.writer(f)
         writer.writerows(list_all)
-
