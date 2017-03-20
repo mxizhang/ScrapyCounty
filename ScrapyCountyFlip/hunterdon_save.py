@@ -10,13 +10,10 @@ def hunterdon_save():
     download_file("http://www.co.hunterdon.nj.us/sheriff/SALES/sales.pdf")
     convert_to_xlsx()
     csv_read()
-
 def download_file(download_url):
     response = urllib2.urlopen(download_url)
     file = open(FILENAME_PDF, 'wb')
     file.write(response.read())
-    file.close()
-
 def convert_to_xlsx():
     try:
         files = {'f': (FILENAME_PDF, open(FILENAME_PDF, 'rb'))}
@@ -53,10 +50,11 @@ def csv_read():
                 item[2] = l[index+1][3].value 
                 num = 3
             #print l[index+1][num+1].value
-            if l[index+1][num+2].value == None:
-                item[7] = str(l[index+1][num+1].value) #address
-            else:
+            try:
                 item[7] = str(l[index+1][num+1].value) + l[index+1][num+2].value #address
+            except:
+                item[7] = str(l[index+1][num+1].value) #address
+
             #print 'case#: '+ item[1] + '/asset: ' + l[index+1][num].value  
         elif row[num+1].value == 'City':
             city = l[index+1][num+1].value.split(' ')
