@@ -146,7 +146,7 @@ class simpleapp_tk(Tk):
             self.entry3.configure(state='normal')
             self.lable2.configure(text=u'Input start row: ')
             self.buttons[3].configure(state='disabled')
-            self.buttons[5].configure(state='disabled')
+            #self.buttons[5].configure(state='disabled')
         # normal mode
         elif mode_option == 0:
             old_name_vairable.set("")
