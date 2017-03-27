@@ -125,6 +125,12 @@ class simpleapp_tk(Tk):
         self.title('Scrapy County -- ' + str(COUNTY[option]['name']))
         selection = "You've selected the " + str(COUNTY[option]['name']) + " county.\n"
         text.insert(INSERT, selection)
+        text.insert(INSERT, '\n===')
+        text.insert(INSERT, '\n\tTry to make sure every property has a sheriff # already!')
+        text.insert(INSERT, '\n\tDelete it or name it as FNJ + DATE + 001-100')
+        text.insert(INSERT, '\n===\n')
+        text.tag_add("red", "3.0", "7.0")
+        text.tag_config("red", background="yellow", foreground="red")
 
     	option = countyname.get()
         mode_option = mode.get()
