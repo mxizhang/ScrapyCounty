@@ -2,7 +2,7 @@ from openpyxl import load_workbook
 import csv
 import datetime
 def main():
-	wb = load_workbook(filename='sheriff_foreclosuresales_list.xlsx')
+	wb = load_workbook(filename='Mercer_lisp\sheriff_foreclosuresales_l.xlsx')
 	ws = wb['Sheet1'] # ws is now an IterableWorksheet
 
 	list_all = []

@@ -109,10 +109,10 @@ class simpleapp_tk(Tk):
         elif option == 5:
             text.insert(INSERT, "Mercer county is using .pdf\n")
             text.insert(INSERT, "Check pdf file has new data before run.\n")
-            text.insert(INSERT, "Please follow: \nStep 1: Download sheriff_foreclosuresales_list.pdf from http://nj.gov/counties/mercer/pdfs/sheriff_foreclosuresales_list.pdf\n")
+            text.insert(INSERT, "Please follow: \nStep 1: Download sheriff_foreclosuresales_l.pdf from http://www.mercercounty.org/home/showdocument?id=2246\n")
             text.insert(INSERT, "Step 2: Open http://www.pdftoexcel.com/\n")
-            text.insert(INSERT, "Step 3: Upload sheriff_foreclosuresales_list.pdf and download .xlsx\n")
-            text.insert(INSERT, "Step 4: Save as sheriff_foreclosuresales_list.xlsx in ScrapyCountyFlip folder\n")
+            text.insert(INSERT, "Step 3: Upload sheriff_foreclosuresales_l.pdf and download .xlsx\n")
+            text.insert(INSERT, "Step 4: Save as sheriff_foreclosuresales_l.xlsx in ScrapyCountyFlip\Mercer_lisp folder\n")
 
     # Select button callback
     def selectscrpy(self):
@@ -129,7 +129,13 @@ class simpleapp_tk(Tk):
         text.insert(INSERT, '\n\tTry to make sure every property has a sheriff # already!')
         text.insert(INSERT, '\n\tDelete it or name it as FNJ + DATE + 001-100')
         text.insert(INSERT, '\n===\n')
-        text.tag_add("red", "3.0", "7.0")
+        if option == 3:
+            text.tag_add("red", "5.0", "9.0")
+        elif option == 5:
+            text.tag_add("red", "7.0", "8.0")
+            text.tag_add("red", "10.0", "14.0")
+        else:
+            text.tag_add("red", "3.0", "7.0")
         text.tag_config("red", background="yellow", foreground="red")
 
     	option = countyname.get()
@@ -187,7 +193,7 @@ def normal():
     sel = string_variable.get()
     name = old_name_vairable.get()
     if number == 3:
-        if sel == "Y":
+        if sel.upper() == "Y":
             hunterdon_save.hunterdon_save()
         else:
             print "No new file will be downloaded. Make sure sale.pdf is the newest."
