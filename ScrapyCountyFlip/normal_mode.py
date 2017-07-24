@@ -25,6 +25,7 @@ MEC_ADDS = 'https://docs.google.com/spreadsheets/d/1c2AiIahiFZFA37FCa5SJOcsWDXJQ
 MON_ADDS = 'https://docs.google.com/spreadsheets/d/1RHMczsQ6mpajEZT0gYcJqCXz3FR5SSZepxXZnGTXmy4/edit#gid=0'
 PSC_ADDS = 'https://docs.google.com/spreadsheets/d/1zlClRl91bAcBtG1zA5NlyOHqUoV1wYHfnzyl_mof1qw/edit#gid=0'
 HDS_ADDS = 'https://docs.google.com/spreadsheets/d/1QEZFHVAlLpKRsUOB0Gfai7C9h7fcasWIuuuUVAwDIm0/edit#gid=0'
+BLT_ADDS = ''
 KEY = 'flipnj-4f3fbac03d23.json'
 
 morris = {'name': 'Morris', 'csv': 'morris_items.csv', 'add': MRS_ADDS}
@@ -37,12 +38,13 @@ middlesex = {'name': 'Middlesex', 'csv': 'middlesex_items.csv', 'add': MIS_ADDS}
 monmouth = {'name': 'Monmouth', 'csv': 'monmouth_items.csv', 'add': MON_ADDS}
 passaic = {'name': 'Passaic', 'csv': 'passaic_items.csv', 'add': PSC_ADDS}
 hudson = {'name': 'Hudson', 'csv': 'hudson_items.csv', 'add': HDS_ADDS}
+burlington = {'name': 'Burlington', 'csv': 'burlington_items.csv', 'add': BLT_ADDS}
 '''
 result = service.spreadsheets().values().get(
     spreadsheetId=spreadsheetID, range='C6', valueRenderOption='FORMULA').execute()
 print result['values'][0][0]
 '''
-COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex, monmouth, passaic, hudson]
+COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex, monmouth, passaic, hudson, burlington]
 '''
 0             1       2      3        4    5   6    7      8    9
 sale_date,sheriff_no,upset,att_ph,case_no,plf, att,address,dfd,schd_data

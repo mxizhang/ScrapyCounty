@@ -60,7 +60,11 @@ result = service.spreadsheets().get(spreadsheetId=spreadsheetID).execute()
 for item in result['sheets']:
 	if item['properties']['title'] == "Sheet5":
 		print item['properties']['sheetId']
-'''
+
 from item_write import items_write
 
 items_write(6, 'Sheet5')
+'''
+import urllib
+content = urllib.urlopen('http://www.middlesexcountynj.gov/Government/Departments/PSH/Pages/Foreclosures.aspx').read()
+print content

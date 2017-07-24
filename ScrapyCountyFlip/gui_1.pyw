@@ -19,8 +19,9 @@ middlesex = {'name': 'Middlesex', 'csv': 'middlesex_items.csv', 'date': 'Wed'}
 monmouth = {'name': 'Monmouth', 'csv': 'monmouth_items.csv', 'date': 'Mon'}
 passaic = {'name': 'Passaic', 'csv': 'passaic_items.csv', 'date': 'Tue'}
 hudson = {'name': 'Hudson', 'csv': 'hudson_items.csv', 'date': 'Thr'}
+burlington = {'name': 'Burlington', 'csv': 'burlington_items.csv', 'date': 'Thr'}
 
-COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex, monmouth, passaic, hudson]
+COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex, monmouth, passaic, hudson, burlington]
 LENGTH = len(COUNTY)
 UNIONFRONT = ('Arial', 12, 'bold')
 class simpleapp_tk(Tk):
@@ -48,8 +49,8 @@ class simpleapp_tk(Tk):
 
     	# text message
 		global text
-		text = ScrolledText(self, height=15, width=70)
-		text.grid(column=1, row=1, rowspan=8, columnspan=3, sticky='W')
+		text = ScrolledText(self, height=18, width=80)
+		text.grid(column=1, row=1, rowspan=9, columnspan=3, sticky='W')
 
     	# Select County -- global countyname[0-8]
 		global countyname
@@ -79,16 +80,16 @@ class simpleapp_tk(Tk):
         string_variable = StringVar()
 
         self.lable1 = Label(self, text=u"Most Recent Tab Name: ", font=UNIONFRONT, anchor=W)
-        self.lable1.grid(column=1, row=9, sticky='EW')
+        self.lable1.grid(column=1, row=10, sticky='EW')
         self.lable2 = Label(self, text="", font=UNIONFRONT, anchor=W)
-        self.lable2.grid(column=1, row=10, sticky='EW')
+        self.lable2.grid(column=1, row=11, sticky='EW')
         self.entry1 = Entry(self, textvariable=old_name_vairable)
-        self.entry1.grid(column=2, row=9, sticky='EW')
+        self.entry1.grid(column=2, row=10, sticky='EW')
         self.entry2 = Entry(self, textvariable=string_variable)
-        self.entry2.grid(column=2, row=10, sticky='EW')
+        self.entry2.grid(column=2, row=11, sticky='EW')
         self.entry3 = Entry(self, textvariable=new_name_variable)
         self.entry3.configure(state='disabled')
-        self.entry3.grid(column=3, row=9, sticky='EW')
+        self.entry3.grid(column=3, row=10, sticky='EW')
 
         sys.stdout = self
         self.resizable(False, False)
@@ -109,10 +110,10 @@ class simpleapp_tk(Tk):
         elif option == 5:
             text.insert(INSERT, "Mercer county is using .pdf\n")
             text.insert(INSERT, "Check pdf file has new data before run.\n")
-            text.insert(INSERT, "Please follow: \nStep 1: Download sheriff_foreclosuresales_l.pdf from http://www.mercercounty.org/home/showdocument?id=2246\n")
+            text.insert(INSERT, "Please follow: \nStep 1: Download sheriff_foreclosuresales_list.pdf from http://nj.gov/counties/mercer/pdfs/sheriff_foreclosuresales_list.pdf\n")
             text.insert(INSERT, "Step 2: Open http://www.pdftoexcel.com/\n")
-            text.insert(INSERT, "Step 3: Upload sheriff_foreclosuresales_l.pdf and download .xlsx\n")
-            text.insert(INSERT, "Step 4: Save as sheriff_foreclosuresales_l.xlsx in ScrapyCountyFlip\Mercer_lisp folder\n")
+            text.insert(INSERT, "Step 3: Upload sheriff_foreclosuresales_list.pdf and download .xlsx\n")
+            text.insert(INSERT, "Step 4: Save as sheriff_foreclosuresales_list.xlsx in ScrapyCountyFlip folder\n")
 
     # Select button callback
     def selectscrpy(self):
@@ -129,14 +130,13 @@ class simpleapp_tk(Tk):
         text.insert(INSERT, '\n\tTry to make sure every property has a sheriff # already!')
         text.insert(INSERT, '\n\tDelete it or name it as FNJ + DATE + 001-100')
         text.insert(INSERT, '\n===\n')
+        text.tag_config("red", background="yellow", foreground="red")
         if option == 3:
             text.tag_add("red", "5.0", "9.0")
         elif option == 5:
-            text.tag_add("red", "7.0", "8.0")
             text.tag_add("red", "10.0", "14.0")
         else:
             text.tag_add("red", "3.0", "7.0")
-        text.tag_config("red", background="yellow", foreground="red")
 
     	option = countyname.get()
         mode_option = mode.get()
@@ -193,7 +193,7 @@ def normal():
     sel = string_variable.get()
     name = old_name_vairable.get()
     if number == 3:
-        if sel.upper() == "Y":
+        if sel == "Y":
             hunterdon_save.hunterdon_save()
         else:
             print "No new file will be downloaded. Make sure sale.pdf is the newest."
