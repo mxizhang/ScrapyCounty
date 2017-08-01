@@ -110,7 +110,7 @@ class simpleapp_tk(Tk):
         elif option == 5:
             text.insert(INSERT, "Mercer county is using .pdf\n")
             text.insert(INSERT, "Check pdf file has new data before run.\n")
-            text.insert(INSERT, "Please follow: \nStep 1: Download sheriff_foreclosuresales_list.pdf from http://nj.gov/counties/mercer/pdfs/sheriff_foreclosuresales_list.pdf\n")
+            text.insert(INSERT, "Please follow: \nStep 1: Download sheriff_foreclosuresales_list.pdf from http://www.mercercounty.org/home/showdocument?id=2250\n")
             text.insert(INSERT, "Step 2: Open http://www.pdftoexcel.com/\n")
             text.insert(INSERT, "Step 3: Upload sheriff_foreclosuresales_list.pdf and download .xlsx\n")
             text.insert(INSERT, "Step 4: Save as sheriff_foreclosuresales_list.xlsx in ScrapyCountyFlip folder\n")
