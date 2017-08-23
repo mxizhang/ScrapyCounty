@@ -193,7 +193,7 @@ def normal():
     sel = string_variable.get()
     name = old_name_vairable.get()
     if number == 3:
-        if sel == "Y":
+        if sel.lower() == "Y":
             hunterdon_save.hunterdon_save()
         else:
             print "No new file will be downloaded. Make sure sale.pdf is the newest."
