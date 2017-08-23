@@ -67,15 +67,15 @@ class BurlingtonSpider(Spider):
                 item['address'] = self.driver.find_element_by_xpath(
                     '//table[1]/tbody/tr[6]/td[2]').text
                 item['upset'] = self.driver.find_element_by_xpath(
-                    '//table[1]/tbody/tr[8]/td[2]').text
-
+                    '//table[1]/tbody/tr[7]/td[2]').text
                 item['att'] = self.driver.find_element_by_xpath(
-                    '//table[1]/tbody/tr[9]/td[2]').text
+                    '//table[1]/tbody/tr[8]/td[2]').text
                 item['dfd'] = self.driver.find_element_by_xpath(
                     '//table[1]/tbody/tr[5]/td[2]').text
                 item['plf'] = self.driver.find_element_by_xpath(
                     '//table[1]/tbody/tr[4]/td[2]').text
-
+                item['att_ph'] = self.driver.find_element_by_xpath(
+                    '//table[1]/tbody/tr[9]/td[2]').text
                 item['schd_data'] = self.driver.find_element_by_xpath(
                     '//table[2]/tbody/tr[1]/td[2]').text
 
