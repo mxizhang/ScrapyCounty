@@ -112,10 +112,10 @@ def normal_mode(num, tab_name):
 	print "-----------------------------------------------------------"
 	print "\t\tBackup Done! Wait for NJlispendens"
 	print "-----------------------------------------------------------"
-	
+	'''
 	### NJLispenden ###
 	njlispendens.njlis_pic(num)
-	'''
+	
 	print "-----------------------------------------------------------"
 	print "\t\tAll Done! Exit anytime."
 	print "-----------------------------------------------------------"
