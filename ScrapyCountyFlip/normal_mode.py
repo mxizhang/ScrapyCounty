@@ -257,7 +257,11 @@ def read_and_write(county_info, worksheet_new_name, start=6):
 				else:
 					worksheet_new.update_cell(start, 11, line[6] + '\nPhone: ' + line[3]) #date
 				#worksheet_new.update_cell(start, 16, line[1]) #status
-				worksheet_new.update_cell(start, 10, 'PLF: ' + line[5] + '\nDEF' + line[8]) #plantiff
+				if county['name'] is "Burlington":
+					worksheet_new.update_cell(start, 10, line[5])
+					worksheet_new.update_cell(start, 14, line[8])
+				else:
+					worksheet_new.update_cell(start, 10, 'PLF: ' + line[5] + '\nDEF:' + line[8]) #plantiff
 
 		zipcode = address.split(" ")[-1:][0]
 		#print zipcode
