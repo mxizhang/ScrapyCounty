@@ -25,7 +25,6 @@ COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex, monmouth, 
 def njlis():
 	driver = webdriver.PhantomJS(executable_path="C:/phantomjs-2.1.1-windows/bin/phantomjs.exe")
 	driver.get("https://njlispendens.com/properties")
-
 	print "#################Logging In################"
 	user = driver.find_element_by_name("amember_login")
 	user.send_keys("Flipping_gr0up")
@@ -35,12 +34,14 @@ def njlis():
 	driver.find_element_by_xpath("/html/body/table/tbody/tr[3]/td[2]/form[1]/table/tbody/tr[4]/td/input").click()
 
 	print driver.title
-	if driver.find_element_by_name("amember_login"):
+	driver.save_screenshot('lis.jpg')
+
+	try:
+		driver.find_element_by_name("amember_login")
 		print "Error!!! --- Disabled account for njlispendens"
 		driver.quit()
 		return None
-		pass
-	else:
+	except NoSuchElementException as err:	
 		return driver
 
 def njlis_pic(num):
