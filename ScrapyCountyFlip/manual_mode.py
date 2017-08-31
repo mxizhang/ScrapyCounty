@@ -55,30 +55,32 @@ def manual_mode(num, old_tab_name, worksheet_new_name, startrow):
 		print "Not found .csv file.\nPlease run in normal mode first."
 		#tkMessageBox.showerror("Error!", "Not found .csv file.\nPlease run in normal mode first.")
 
-	### write manully ###
-	try:
-		print "--------------------------------------------------"
-		print county['name'] + " County starts from NO. " + str(startrow-5) + " item!"
-		read_and_write(county_info, worksheet_new_name, startrow)
-	except:
-		print "--------------------------------------------------"
-		print "\t\tNetwork problme. please try again."
-		print "--------------------------------------------------"
-		#tkMessageBox.showerror("Error!", "Network Problem.\nPlease run it again.")
-		quit()
 
+	if startrow is not 0:
+
+		### write manully ###
+		try:
+			print "--------------------------------------------------"
+			print county['name'] + " County starts from NO. " + str(startrow-5) + " item!"
+			read_and_write(county_info, worksheet_new_name, startrow)
+		except:
+			print "--------------------------------------------------"
+			print "\t\tNetwork problem. please try again."
+			print "--------------------------------------------------"
+			#tkMessageBox.showerror("Error!", "Network Problem.\nPlease run it again.")
+			quit()
+		njlispendens.njlis_pic(num)
 	#tkMessageBox.showinfo("Congrats", "Finished! \nPlease wait until back-up process done.")
-	
 	### Back Up ###
 	back_up(county_info)
 	'''
 	print "-----------------------------------------------------------"
 	print "\t\tBackup Done! Wait for NJlispendens"
 	print "-----------------------------------------------------------"
-	
-	### NJLispenden ###
-	njlispendens.njlis_pic(num)
 	'''
+
+	### NJLispenden ###
+	
 	print "-----------------------------------------------------------"
 	print "\t\tAll Done! Exit anytime."
 	print "-----------------------------------------------------------"

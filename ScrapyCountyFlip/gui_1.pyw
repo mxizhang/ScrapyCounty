@@ -33,7 +33,7 @@ class simpleapp_tk(Tk):
     def initialize(self):
         self.grid()
         # Menu buttons -- global mode [0:normal 1:manual 2:check 3:help]
-        MODES = ['Normal', 'Manual', 'Check', 'Help']
+        MODES = ['Normal', 'Manual', 'Backup', 'Help']
         global mode
         mode = IntVar()
         for index, var in enumerate(MODES):
@@ -44,8 +44,6 @@ class simpleapp_tk(Tk):
             b.grid(row=0, column=index, sticky='W')
             if index == 0:
             	b.select()
-            elif index == 2:
-                b.configure(state='disabled')
 
     	# text message
 		global text
@@ -156,6 +154,7 @@ class simpleapp_tk(Tk):
             old_name_vairable.set("Last run tab name here: ")
             new_name_variable.set("Current tab name here: ")
             self.entry3.configure(state='normal')
+            self.entry2.configure(state='normal')
             self.lable2.configure(text=u'Input start row: ')
             self.buttons[3].configure(state='disabled')
             #self.buttons[5].configure(state='disabled')
@@ -164,9 +163,18 @@ class simpleapp_tk(Tk):
             old_name_vairable.set("")
             new_name_variable.set("")
             self.entry3.configure(state='disabled')
-            self.lable2.configure(text=u'Download PDF? (Y/N)')
+            self.entry2.configure(state='normal')
+            self.lable2.configure(text=u'')
             self.buttons[3].configure(state='normal')
-            self.buttons[5].configure(state='normal')
+        # backup mode
+        elif mode_option == 2:
+            old_name_vairable.set("")
+            new_name_variable.set("")
+            self.entry3.configure(state='disabled')
+            self.entry2.configure(state='disabled')
+            self.lable2.configure(text=u'')
+            self.buttons[3].configure(state='normal')
+
 
 # Run backend scrapy
     def run_scrapy(self):
@@ -186,6 +194,11 @@ class simpleapp_tk(Tk):
                 th = threading.Thread(target=manual)
                 th.setDaemon(True)
                 th.start()
+            elif mode_option == 2:
+                th = threading.Thread(target=backup)
+                th.setDaemon(True)
+                th.start()
+
 
 def normal():
     time.sleep(0.5)
@@ -193,7 +206,7 @@ def normal():
     sel = string_variable.get()
     name = old_name_vairable.get()
     if number == 3:
-        if sel.lower() == "Y":
+        if sel.lower() == "y":
             hunterdon_save.hunterdon_save()
         else:
             print "No new file will be downloaded. Make sure sale.pdf is the newest."
@@ -217,6 +230,13 @@ def manual():
     print "%s: %s and %s start with %s" % (county, old_tab_name, new_tab_name, startrow)
     manual_mode(county, old_tab_name, new_tab_name, int(startrow))
     #print "manual mode run"
+
+def backup():
+    time.sleep(0.5)
+    county = countyname.get()
+    old_tab_name = old_name_vairable.get()
+    print "%s: %s starts to backup." % (county, old_tab_name)
+    manual_mode(county, old_tab_name, "", 0)
 
 if __name__ == "__main__":
     app = simpleapp_tk(None)
