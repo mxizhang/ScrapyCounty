@@ -2,7 +2,7 @@ from openpyxl import load_workbook
 import csv
 import datetime
 def main():
-	wb = load_workbook(filename='Mercer PDF/sheriff_foreclosuresales_l.xlsx')
+	wb = load_workbook(filename='sheriff_foreclosuresales_l.xlsx')
 	ws = wb['Sheet1'] # ws is now an IterableWorksheet
 
 	list_all = []
@@ -30,8 +30,11 @@ def main():
 			else:
 				ori_date = row[1].value # original sale date
 				file_no = row[3].value #file no
-				#print row[4].value.split(' ')
-				case_no = row[4].value.split(' ')[-1] #court no
+				if row[4].value == None:
+					pass
+				else:
+					#print row[4].value.split(' ')
+					case_no = row[4].value.split(' ')[-1] #court no
 
 		elif row[0].value == "Current Sale Date:":
 			if row[1].value == WE:
