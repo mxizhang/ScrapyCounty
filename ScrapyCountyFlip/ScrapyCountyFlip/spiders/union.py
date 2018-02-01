@@ -20,7 +20,8 @@ scrapy crawl morris -o morris_items.csv
 from scrapy import Spider
 from selenium import webdriver
 from ScrapyCountyFlip.items import Item
-import datetime
+from datetime import datetime, timedelta
+import time
 
 
 def next_weekday(d, weekday):  # 0 = Monday, 1=Tuesday, 2=Wednesday...
@@ -46,40 +47,50 @@ class UnionSpider(Spider):
         self.driver.get(response.url)
         el = self.driver.find_element_by_xpath('//a[@href="/Sales/SalesSearch?countyId=15"]')
         el.click()
-
-        we = next_weekday(datetime.datetime.today(), 2)
+        '''
+        we = next_weekday(datetime.today(), 2)
         WE = "%s/%s/%s" % (we.month, we.day, we.year)
-
+        '''
+        now = datetime.now()
+        n = "%s/%s/%s" % (now.month, now.day, now.year)
+        N = time.strptime(n, "%m/%d/%Y")
+        std = now + timedelta(days=90)
+        STD = "%s/%s/%s" % (std.month, std.day, std.year)
+        std = time.strptime(STD, "%m/%d/%Y")
         for i in range(1, 1300):
-            result = self.driver.find_element_by_xpath("//table/tbody/tr[%s]/td[1]/a" % i)
-            date = self.driver.find_element_by_xpath("//table/tbody/tr[%s]/td[3]" % i).text
-            if date != WE:
-                continue
-            else:
-                result.click()
-                item = Item()
-                item['sheriff_no'] = self.driver.find_element_by_xpath(
-                    '//table[1]/tbody/tr[1]/td[2]').text
-                item['sale_date'] = self.driver.find_element_by_xpath(
-                    '//table[1]/tbody/tr[3]/td[2]').text
-                item['case_no'] = self.driver.find_element_by_xpath(
-                    '//table[1]/tbody/tr[2]/td[2]').text
-                item['address'] = self.driver.find_element_by_xpath(
-                    '//table[1]/tbody/tr[6]/td[2]').text
-                item['upset'] = self.driver.find_element_by_xpath(
-                    '//table[1]/tbody/tr[8]/td[2]').text
+            try:
+                result = self.driver.find_element_by_xpath("//table/tbody/tr[%s]/td[1]/a" % i)
+                date = self.driver.find_element_by_xpath("//table/tbody/tr[%s]/td[3]" % i).text
+                date_str = time.strptime(date, "%m/%d/%Y")
+                if date_str > std or date_str <= N:
+                    continue
+                else:
+                    result.click()
+                    item = Item()
+                    item['sheriff_no'] = self.driver.find_element_by_xpath(
+                        '//table[1]/tbody/tr[1]/td[2]').text
+                    item['sale_date'] = self.driver.find_element_by_xpath(
+                        '//table[1]/tbody/tr[3]/td[2]').text
+                    item['case_no'] = self.driver.find_element_by_xpath(
+                        '//table[1]/tbody/tr[2]/td[2]').text
+                    item['address'] = self.driver.find_element_by_xpath(
+                        '//table[1]/tbody/tr[6]/td[2]').text
+                    item['upset'] = self.driver.find_element_by_xpath(
+                        '//table[1]/tbody/tr[8]/td[2]').text
 
-                item['att'] = self.driver.find_element_by_xpath(
-                    '//table[1]/tbody/tr[9]/td[2]').text
-                item['dfd'] = self.driver.find_element_by_xpath(
-                    '//table[1]/tbody/tr[5]/td[2]').text
-                item['plf'] = self.driver.find_element_by_xpath(
-                    '//table[1]/tbody/tr[4]/td[2]').text
+                    item['att'] = self.driver.find_element_by_xpath(
+                        '//table[1]/tbody/tr[9]/td[2]').text
+                    item['dfd'] = self.driver.find_element_by_xpath(
+                        '//table[1]/tbody/tr[5]/td[2]').text
+                    item['plf'] = self.driver.find_element_by_xpath(
+                        '//table[1]/tbody/tr[4]/td[2]').text
 
-                item['schd_data'] = self.driver.find_element_by_xpath(
-                    '//table[2]/tbody/tr[1]/td[2]').text
+                    item['schd_data'] = self.driver.find_element_by_xpath(
+                        '//table[2]/tbody/tr[1]/td[2]').text
 
-                yield item
-                self.driver.back()
+                    yield item
+                    self.driver.back()
+            except Exception:
+                break
 
         self.driver.close()
