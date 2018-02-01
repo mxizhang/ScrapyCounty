@@ -9,6 +9,7 @@ from apiclient import discovery
 from googleapiclient.errors import HttpError
 from oauth2client.service_account import ServiceAccountCredentials
 from normal_mode import *
+import union_test
 
 MRS_ADDS = 'https://docs.google.com/spreadsheets/d/1v5sNJuIiLGwU6fH9Kpfr9XRxQCxrf7bx_PR_1fNA_6Q/edit#gid=0'
 ESS_ADDS = 'https://docs.google.com/spreadsheets/d/1isOSOsyvGFTuCZwuqEEkmou0uxWm9AVCrNx_V0_JDmc/edit#gid=0'
@@ -19,7 +20,8 @@ UNI_ADDS = 'https://docs.google.com/spreadsheets/d/1koChyqS8UbXCoWV662YY8zVXT57l
 MEC_ADDS = 'https://docs.google.com/spreadsheets/d/1c2AiIahiFZFA37FCa5SJOcsWDXJQxa3qwmHw0rlB7eY/edit#gid=0'
 MON_ADDS = 'https://docs.google.com/spreadsheets/d/1RHMczsQ6mpajEZT0gYcJqCXz3FR5SSZepxXZnGTXmy4/edit#gid=0'
 PSC_ADDS = 'https://docs.google.com/spreadsheets/d/1zlClRl91bAcBtG1zA5NlyOHqUoV1wYHfnzyl_mof1qw/edit#gid=0'
-
+HDS_ADDS = 'https://docs.google.com/spreadsheets/d/1QEZFHVAlLpKRsUOB0Gfai7C9h7fcasWIuuuUVAwDIm0/edit#gid=0'
+BLT_ADDS = 'https://docs.google.com/spreadsheets/d/1zs2fKbSWRFKMH2qSxcHhMhD7ntI952w4ihPJ9lzNbEg/edit#gid=0'
 KEY = 'flipnj-4f3fbac03d23.json'
 
 morris = {'name': 'Morris', 'csv': 'morris_items.csv', 'add': MRS_ADDS}
@@ -31,12 +33,14 @@ mercer = {'name': 'Mercer', 'csv': 'mercer_items.csv', 'add': MEC_ADDS}
 middlesex = {'name': 'Middlesex', 'csv': 'middlesex_items.csv', 'add': MIS_ADDS}
 monmouth = {'name': 'Monmouth', 'csv': 'monmouth_items.csv', 'add': MON_ADDS}
 passaic = {'name': 'Passaic', 'csv': 'passaic_items.csv', 'add': PSC_ADDS}
+hudson = {'name': 'Hudson', 'csv': 'hudson_items.csv', 'add': HDS_ADDS}
+burlington = {'name': 'Burlington', 'csv': 'burlington_items.csv', 'add': BLT_ADDS}
 '''
 result = service.spreadsheets().values().get(
     spreadsheetId=spreadsheetID, range='C6', valueRenderOption='FORMULA').execute()
 print result['values'][0][0]
 '''
-COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex, monmouth, passaic]
+COUNTY = [morris, essex, bergen, hunterdon, union, mercer, middlesex, monmouth, passaic, hudson, burlington]
 '''
 0             1       2      3        4    5   6    7      8    9
 sale_date,sheriff_no,upset,att_ph,case_no,plf, att,address,dfd,schd_data
@@ -85,4 +89,4 @@ def manual_mode(num, old_tab_name, worksheet_new_name, startrow):
 	print "\t\tAll Done! Exit anytime."
 	print "-----------------------------------------------------------"
 
-#manual_mode(5, '02/18/2017', '02/27/2017', 48)
+#manual_mode(4, '01/22/2018', '01/24/2018', 160)

@@ -8,8 +8,8 @@ import httplib2
 import random
 import os
 import subprocess
+import mercer_convert
 from Tkinter import *
-import tkMessageBox
 import njlispendens
 from apiclient import discovery
 from googleapiclient.errors import HttpError
@@ -139,7 +139,7 @@ def back_up(county_info):
 
 		try:
 			cell = worksheet_all.find(caseno)
-			print "%s at %s is deleted." % (caseno, startrow)
+			print "%s at %s is updated." % (caseno, cell.row)
 			requests.append({
 			    'deleteDimension': {
 				    "range": {
@@ -370,9 +370,11 @@ def find_sheetname(spreadsheetID, sheetId):
 		if item['properties']['sheetId'] == sheetId:
 			return item['properties']['title']
 	return None
+
+
+#normal_mode(4, '01/22/2018')
 '''
-#normal_mode(0, '01/19/2017')
-c_info = match(10, '01/16/2017')
+c_info = match(5, '01/02/2018')
 back_up(c_info)
 print '???????? finished'
 '''
