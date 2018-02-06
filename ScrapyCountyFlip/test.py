@@ -95,3 +95,5 @@ for i in range(6,200):
 	if s is "":
 		break
 '''
+num = '1333012.0'
+print str(int(float(num)))

@@ -188,6 +188,9 @@ def read_and_write(county_info, worksheet_new_name, start=6):
 	worksheet_all = county_info['worksheet_all_info']['gspread']
 	for line in data[start-5:]:
 		caseno = line[1]
+		if county['name'] == 'Mercer':
+			caseno = str(int(float(caseno)))
+		print "caseno: " + caseno
 		new_no = find_sheetId(spreadsheetID, worksheet_new_name)
 
 		try:

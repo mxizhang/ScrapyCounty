@@ -6,6 +6,7 @@ import hunterdon_save
 import mercer_convert
 from manual_mode import *
 import normal_mode
+import union_test
 import datetime
 from ScrolledText import ScrolledText
 
@@ -214,6 +215,8 @@ def normal():
     elif number == 5:
         mercer_convert.main()
         normal_mode.normal_mode(number, name)
+    elif number == 4:
+        union_test.normal_mode(number, name)
     else:
         normal_mode.normal_mode(number, name)
     #scrapycounty.bergen(county, tab_name)
