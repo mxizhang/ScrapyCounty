@@ -68,14 +68,13 @@ def match(num, tab_name):
 		worksheet_old_id = find_sheetId(spreadsheetID, tab_name)
 		worksheet_all_name = find_sheetname(spreadsheetID, 0)
 		worksheet_all = get_gspread(SS_ADDRESS, worksheet_all_name)
-		worksheet_fut = get_gspread(SS_ADDRESS, "future")
-		worksheet_fut_id = find_sheetId(spreadsheetID, 'future')
+		#worksheet_fut = get_gspread(SS_ADDRESS, "future")
+		#worksheet_fut_id = find_sheetId(spreadsheetID, 'future')
 		worksheet_old_info = {'name': tab_name, 'id': worksheet_old_id, 'gspread': worksheet_old}
 		worksheet_all_info = {'name': worksheet_all_name, 'id': 0, 'gspread': worksheet_all}
-		worksheet_fut_info = {'name': 'future', 'id': worksheet_fut_id, 'gspread': worksheet_fut}
+		#worksheet_fut_info = {'name': 'future', 'id': worksheet_fut_id, 'gspread': worksheet_fut}
 		county_info = {'county': county, 'worksheet_old_info': worksheet_old_info, 
-						'worksheet_all_info': worksheet_all_info,
-						'worksheet_fut_info': worksheet_fut_info }
+						'worksheet_all_info': worksheet_all_info}
 		return county_info
 	except exceptions.WorksheetNotFound as err: 
 		print "Please enter a valid tab name in sheet.\nAnd make sure it's not today's date."
@@ -187,7 +186,7 @@ def read_and_write(county_info, worksheet_new_name, start=6):
 	worksheet_new = get_gspread(SS_ADDRESS, worksheet_new_name)
 	worksheet_old = county_info['worksheet_old_info']['gspread']
 	worksheet_all = county_info['worksheet_all_info']['gspread']
-	worksheet_fut = county_info['worksheet_fut_info']['gspread']
+	#worksheet_fut = county_info['worksheet_fut_info']['gspread']
 
 	we = next_weekday(datetime.today(), 2)
 	WE = "%s/%s/%s" % (we.month, we.day, we.year)
@@ -197,24 +196,50 @@ def read_and_write(county_info, worksheet_new_name, start=6):
 		new_no = find_sheetId(spreadsheetID, worksheet_new_name)
 		current_date = line[0]
 		Found = False
-		print current_date
-		if current_date == WE:
-			print caseno
+		#print current_date
+		#if current_date == WE:
+			#print caseno
+		try:
+			cell = worksheet_old.find(caseno)
+			print "Found in worksheet_old"
+			Found = True
+			date = worksheet_old.cell(cell.row, 1).value
+			address = worksheet_old.cell(cell.row, 3).value
+			town = worksheet_old.cell(cell.row, 4).value
+			zipcode = worksheet_old.cell(cell.row, 5).value
+			print "Found in old " + str(cell.row) + "/" + str(cell.col) + ": " + str(cell.value)
+
+			requests = []
+			requests.append({
+			    'copyPaste': {
+				    "source": {
+					    "sheetId": county_info['worksheet_old_info']['id'], "startRowIndex": cell.row - 1, "endRowIndex": cell.row, },
+				    "destination": {
+					  	"sheetId": new_no, "startRowIndex": start - 1, "endRowIndex": start, },
+					"pasteType": "PASTE_NORMAL",
+			    }
+			})
+			batchUpdateRequest = {'requests': requests}
+			service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
+			worksheet_new.update_cell(start, 8, line[2]) #upset
+			if date != line[0]:
+				worksheet_new.update_cell(start, 1, date + "->" + line[0]) #date
+		except CellNotFound as err:
 			try:
-				cell = worksheet_fut.find(caseno)
-				print "Found in Future"
+				cell = worksheet_all.find(caseno)
+				print "Found in All"
 				Found = True
-				date = worksheet_fut.cell(cell.row, 1).value
-				address = worksheet_fut.cell(cell.row, 3).value
-				address = address.replace(',', ' ')
-				address = address.replace('\n', ' ')
-				print "Found in old " + str(cell.row) + "/" + str(cell.col) + ": " + str(cell.value)
+				date = worksheet_all.cell(cell.row, 1).value
+				address = worksheet_all.cell(cell.row, 3).value
+				town = worksheet_all.cell(cell.row, 4).value
+				zipcode = worksheet_all.cell(cell.row, 5).value
+				print "Found in all " + str(cell.row) + "/" + str(cell.col) + ": " + str(cell.value)
 
 				requests = []
 				requests.append({
 				    'copyPaste': {
 					    "source": {
-						    "sheetId": county_info['worksheet_fut_info']['id'], "startRowIndex": cell.row - 1, "endRowIndex": cell.row, },
+						    "sheetId": 0, "startRowIndex": cell.row - 1, "endRowIndex": cell.row, },
 					    "destination": {
 						  	"sheetId": new_no, "startRowIndex": start - 1, "endRowIndex": start, },
 						"pasteType": "PASTE_NORMAL",
@@ -226,115 +251,64 @@ def read_and_write(county_info, worksheet_new_name, start=6):
 				if date != line[0]:
 					worksheet_new.update_cell(start, 1, date + "->" + line[0]) #date
 			except CellNotFound as err:
-				try:
-					cell = worksheet_old.find(caseno)
-					print "Found in worksheet_old"
-					Found = True
-					date = worksheet_old.cell(cell.row, 1).value
-					address = worksheet_old.cell(cell.row, 3).value
-					address = address.replace(',', ' ')
-					address = address.replace('\n', ' ')
-					print "Found in old " + str(cell.row) + "/" + str(cell.col) + ": " + str(cell.value)
-
-					requests = []
-					requests.append({
-					    'copyPaste': {
-						    "source": {
-							    "sheetId": county_info['worksheet_old_info']['id'], "startRowIndex": cell.row - 1, "endRowIndex": cell.row, },
-						    "destination": {
-							  	"sheetId": new_no, "startRowIndex": start - 1, "endRowIndex": start, },
-							"pasteType": "PASTE_NORMAL",
-					    }
-					})
-					batchUpdateRequest = {'requests': requests}
-					service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
-					worksheet_new.update_cell(start, 8, line[2]) #upset
-					if date != line[0]:
-						worksheet_new.update_cell(start, 1, date + "->" + line[0]) #date
-				except CellNotFound as err:
-					try:
-						cell = worksheet_all.find(caseno)
-						print "Found in All"
-						Found = True
-						date = worksheet_all.cell(cell.row, 1).value
-						address = worksheet_all.cell(cell.row, 3).value
-						address = address.replace(',', ' ')
-						address = address.replace('\n', ' ')
-						print "Found in all " + str(cell.row) + "/" + str(cell.col) + ": " + str(cell.value)
-
-						requests = []
-						requests.append({
-						    'copyPaste': {
-							    "source": {
-								    "sheetId": 0, "startRowIndex": cell.row - 1, "endRowIndex": cell.row, },
-							    "destination": {
-								  	"sheetId": new_no, "startRowIndex": start - 1, "endRowIndex": start, },
-								"pasteType": "PASTE_NORMAL",
-						    }
-						})
-						batchUpdateRequest = {'requests': requests}
-						service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
-						worksheet_new.update_cell(start, 8, line[2]) #upset
-						if date != line[0]:
-							worksheet_new.update_cell(start, 1, date + "->" + line[0]) #date
-					except CellNotFound as err:
-						print "New Item!"
-						Found = False
-						if line[0] == line[9] or line[9] == 0:
-							worksheet_new.update_cell(start, 1, line[0]) #date
-						else:
-							worksheet_new.update_cell(start, 1, line[9] + '->' + line[0]) #date
-						worksheet_new.update_cell(start, 2, line[1]) #shriff
-						worksheet_new.update_cell(start, 14, line[4]) #case
-						#worksheet_new.update_cell(start, 6, line[55]) #add
-						address = line[7].replace('\n', ' ')
-						worksheet_new.update_cell(start, 8, line[2]) #upset
-						if line[3] == '':
-							worksheet_new.update_cell(start, 13, line[6]) #att
-						else:
-							worksheet_new.update_cell(start, 13, line[6] + '\nPhone: ' + line[3]) #date
-						#worksheet_new.update_cell(start, 16, line[1]) #status
-						if county['name'] is "Burlington":
-							worksheet_new.update_cell(start, 12, line[5])
-							worksheet_new.update_cell(start, 16, line[8])
-						else:
-							worksheet_new.update_cell(start, 12, 'PLF: ' + line[5] + '\nDEF:' + line[8]) #plantiff
+				print "New Item!"
+				Found = False
+				if line[0] == line[9] or line[9] == 0:
+					worksheet_new.update_cell(start, 1, line[0]) #date
+				else:
+					worksheet_new.update_cell(start, 1, line[9] + '->' + line[0]) #date
+				worksheet_new.update_cell(start, 2, line[1]) #shriff
+				worksheet_new.update_cell(start, 14, line[4]) #case
+				#worksheet_new.update_cell(start, 6, line[55]) #add
+				address = line[7].replace('\n', ' ')
+				worksheet_new.update_cell(start, 8, line[2]) #upset
+				if line[3] == '':
+					worksheet_new.update_cell(start, 13, line[6]) #att
+				else:
+					worksheet_new.update_cell(start, 13, line[6] + '\nPhone: ' + line[3]) #date
+				#worksheet_new.update_cell(start, 16, line[1]) #status
+				worksheet_new.update_cell(start, 12, 'PLF: ' + line[5] + '\nDEF:' + line[8]) #plantiff
+		
+		if not Found:
 			zipcode = address.split(' ')[-1]
 			town = address.split(' ')[-3]
-			street = " ".join(address.split(' ')[0:-3])
-			#print zipcode
-			if zipcode.isdigit():
-				#print "IS DIGIT"
-				zillow = findzillow(address, zipcode)
-			else:
-				zillow = findzillow(address, '')
-				if zillow[3] is not '':
-					#print "!!!Address replaced"
-					address = address + ' ' + zillow[3] 
-			#print zillow
-			worksheet_new.update_cell(start, 15, zillow[1]) #zestimate
 			worksheet_new.update_cell(start, 4, town)
 			worksheet_new.update_cell(start, 5, zipcode)
-			if zillow[2] == '' and Found: #find in old or all & Copy paste
-				pass
-			elif zillow[2] == '' and not Found: #New Item
-				#print line
-				worksheet_new.update_cell(start, 3, address) #add	
-			else:
-				requests = []
-				requests.append({
-				    'updateCells': {
-					    "rows": { 
-					    	"values": [{
-					    		"userEnteredValue": {
-					    			"formulaValue": '=HYPERLINK("' + zillow[2] + '","' + address + '")', }, }], },
-					    "fields": "*",
-					    "start": {
-					    	"sheetId": new_no, "rowIndex": start - 1, "columnIndex": 2,},}
-				})
-				batchUpdateRequest = {'requests': requests}
-				service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
-				
+		elif not address.split(' ')[-1].isdigit():
+			print "!!! Street replace"
+			address = address + " " + town + " NJ " + zipcode
+			worksheet_new.update_cell(start, 3, address) #add
+		#print zipcode
+		if zipcode.isdigit():
+			#print "IS DIGIT"
+			zillow = findzillow(address, zipcode)
+		else:
+			zillow = findzillow(address, '')
+			if zillow[3] is not '':
+				#print "!!!Address replaced"
+				address = address + ' ' + zillow[3] 
+		#print zillow
+		worksheet_new.update_cell(start, 15, zillow[1]) #zestimate
+		if zillow[2] == '' and Found: #find in old or all & Copy paste
+			pass
+		elif zillow[2] == '' and not Found: #New Item
+			#print line
+			worksheet_new.update_cell(start, 3, address) #add	
+		else:
+			requests = []
+			requests.append({
+			    'updateCells': {
+				    "rows": { 
+				    	"values": [{
+				    		"userEnteredValue": {
+				    			"formulaValue": '=HYPERLINK("' + zillow[2] + '","' + address + '")', }, }], },
+				    "fields": "*",
+				    "start": {
+				    	"sheetId": new_no, "rowIndex": start - 1, "columnIndex": 2,},}
+			})
+			batchUpdateRequest = {'requests': requests}
+			service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
+		'''		
 		else:
 			print "Other"
 			try:
@@ -398,7 +372,7 @@ def read_and_write(county_info, worksheet_new_name, start=6):
 					})
 					batchUpdateRequest = {'requests': requests}
 					service.spreadsheets().batchUpdate(spreadsheetId=spreadsheetID, body=batchUpdateRequest).execute()
-
+'''
 		start=start+1
 		print "%s out of %s is finished." % (start-6, row_count-1)
 
@@ -476,12 +450,7 @@ def find_sheetname(spreadsheetID, sheetId):
 		if item['properties']['sheetId'] == sheetId:
 			return item['properties']['title']
 	return None
-'''
-#normal_mode(0, '01/19/2017')
-c_info = match(10, '01/16/2017')
-back_up(c_info)
-print '???????? finished'
-'''
+
 #normal_mode(4, '01/22/2018')
-#c_info = match(4, '01/22/2018')
-#read_and_write(c_info, '01/24/2018', 679)
+#c_info = match(4, '02/13/2018')
+#read_and_write(c_info, '03/05/2018', 6)
