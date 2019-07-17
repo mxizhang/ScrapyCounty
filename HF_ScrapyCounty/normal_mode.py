@@ -12,8 +12,8 @@ from apiclient import discovery
 from googleapiclient.errors import HttpError
 from oauth2client.service_account import ServiceAccountCredentials
 
-ESS_ADDS = 'https://docs.google.com/spreadsheets/d/1isOSOsyvGFTuCZwuqEEkmou0uxWm9AVCrNx_V0_JDmc/edit#gid=0'
-MIS_ADDS = 'https://docs.google.com/spreadsheets/d/1W-6ngztdGnx-N2-YA8v7dtOgw39OYi9cauYtMa4t-lw/edit#gid=0'
+ESS_ADDS = 'https://docs.google.com/spreadsheets/d/11-NTooLrJf9NdzT_mdNECmXNi8oDZQnB-FMoy510Hx0/edit#gid=0'
+MIS_ADDS = 'https://docs.google.com/spreadsheets/d/19R_7CYe1m07S6e3ZPpH5UphZE-lDEp2P0Fi-j7DSmO0/edit#gid=0'
 UNI_ADDS = 'https://docs.google.com/spreadsheets/d/1Ut4Kcz2zd8VNw-J1SQOhe1yD4HC86J9JZA3oy-Lm2a4/edit#gid=0'
 KEY = 'Project havingfun-e21e4cd12c11.json'
 
@@ -69,7 +69,7 @@ def normal_mode(num, tab_name):
 	spreadsheetID = county_info['county']['add'].split('/')[5]
 	
 	### scrapy New Items ###
-	#scrapy(num, county_info['county'])
+	scrapy(num, county_info['county'])
 	### New Sheet ###
 	worksheet_new_name = new_sheet(spreadsheetID)
 	#tkMessageBox.showinfo("Congrats", "New Sheet! \nPlease wait for reading & writing data.")
@@ -224,10 +224,10 @@ def read_and_write(county_info, worksheet_new_name, start=6):
 			except CellNotFound as err:
 				print ("New Item!")
 				Found = False
-				if line[0] == line[9] or line[9] == 0:
+				if line[0] == line[9] or line[9] == 0 or county['name'] == 'Middlesex':
 					worksheet_new.update_cell(start, 1, line[0]) #date
 				else:
-					worksheet_new.update_cell(start, 1, line[9] + '->' + line[0]) #date
+					worksheet_new.update_cell(start, 1, line[0] + '<-' + line[9]) #date
 				worksheet_new.update_cell(start, 2, line[1]) #shriff
 				worksheet_new.update_cell(start, 12, line[4]) #case
 				#worksheet_new.update_cell(start, 6, line[55]) #add
@@ -238,11 +238,7 @@ def read_and_write(county_info, worksheet_new_name, start=6):
 				else:
 					worksheet_new.update_cell(start, 11, line[6] + '\nPhone: ' + line[3]) #date
 				#worksheet_new.update_cell(start, 16, line[1]) #status
-				if county['name'] is "Burlington":
-					worksheet_new.update_cell(start, 10, line[5])
-					worksheet_new.update_cell(start, 14, line[8])
-				else:
-					worksheet_new.update_cell(start, 10, 'PLF: ' + line[5] + '\nDEF:' + line[8]) #plantiff
+				worksheet_new.update_cell(start, 10, 'DEF:' + line[8]) #plantiff
 
 		zipcode = address.split(" ")[-1:][0]
 		#print zipcode
@@ -353,7 +349,7 @@ def find_sheetname(spreadsheetID, sheetId):
 	return None
 
 
-#normal_mode(1, 'Sheet2')
+#normal_mode(0, 'Sheet2')
 '''
 c_info = match(5, '01/02/2018')
 back_up(c_info)

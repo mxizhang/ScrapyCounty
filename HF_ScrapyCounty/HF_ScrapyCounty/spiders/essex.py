@@ -38,8 +38,8 @@ class EssexSpider(Spider):
         '''
         !!! FOR WINDOWS USER
         '''
-        #self.driver = webdriver.PhantomJS(executable_path="c:/phantomjs-2.1.1-windows/bin/phantomjs.exe")
-        self.driver = webdriver.PhantomJS()
+        self.driver = webdriver.PhantomJS(executable_path="c:/phantomjs-2.1.1-windows/bin/phantomjs.exe")
+        #self.driver = webdriver.PhantomJS()
 
     def parse(self, response):
         self.driver.get(response.url)
@@ -52,7 +52,7 @@ class EssexSpider(Spider):
         for i in range(1, 1300):
             result = self.driver.find_element_by_xpath("//table/tbody/tr[%s]/td[1]/a" % i)
             date = self.driver.find_element_by_xpath("//table/tbody/tr[%s]/td[3]" % i).text
-            if date != TU:
+            if date == TU:
                 continue
             else:
                 result.click()

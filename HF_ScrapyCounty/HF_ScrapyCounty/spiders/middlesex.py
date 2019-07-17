@@ -38,7 +38,7 @@ def init_phantomjs_driver(*args, **kwargs):
 
     webdriver.DesiredCapabilities.PHANTOMJS['phantomjs.page.settings.userAgent'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36'
 
-    driver =  webdriver.PhantomJS(*args, **kwargs)
+    driver =  webdriver.PhantomJS(executable_path='c:/phantomjs-2.1.1-windows/bin/phantomjs.exe', *args, **kwargs)
     driver.set_window_size(1600, 1200)
 
     return driver
@@ -55,22 +55,23 @@ class MiddlesexSpider(Spider):
 		count = 1
 		self.driver.get(response.url)
 		self.driver.get_screenshot_as_file('sc.png')
-		ul = self.driver.find_elements_by_xpath('//*[@id="SheriffForclosuresWP"]/div/div[1]/div/ul/li')
+		ul = self.driver.find_elements_by_xpath('//*[@class="subhead"]/div/ul/li')
 		for each in ul:
 			count = count + 1
 		#self.driver.get_screenshot_as_file('sc1.png')
 		#self.driver.find_element_by_xpath('//div[@class="mobile-only more"]/a').click()
 		#self.driver.get_screenshot_as_file('sc1.png')
-		#print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + str(count)
+		print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + str(count)
+
 		we = next_weekday(datetime.datetime.today(), 2)
 		WE = "%02d/%02d/%02d" % (we.month, we.day, we.year)
 		for j in range(2, count+1):
 			for i in range(1, 41):
 				try:
 					date = self.driver.find_element_by_xpath('//*[@id="SheriffForclosuresWP"]/div/table/tbody/tr[%s]/td[3]' % i).text
-					print date + ': ' + WE
+					#print date + ': ' + WE
 					
-					if date != WE:
+					if date == WE:
 						continue
 					else:
 						item = Item()
@@ -86,5 +87,5 @@ class MiddlesexSpider(Spider):
 						yield item
 				except:
 					break
-			self.driver.find_element_by_xpath('//*[@id="SheriffForclosuresWP"]/div/div[1]/div/ul/li[%s]/a' % j).click()
+			self.driver.find_element_by_xpath('//*[@class="subhead"]/div/ul/li[%s]/a' % j).click()
 		self.driver.close()
