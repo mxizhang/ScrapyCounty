@@ -46,7 +46,7 @@ def main():
         new_tab = raw_input('New Tab Name?')
         start_row = raw_input('Restarting from which row?')
 
-        manual_mode.manual_mode(int(num)-1, tab_name, new_tab, start_row)
+        manual_mode.manual_mode(int(num)-1, tab_name, new_tab, int(start_row))
     else:
         normal_mode.normal_mode(int(num)-1, tab_name)
 
